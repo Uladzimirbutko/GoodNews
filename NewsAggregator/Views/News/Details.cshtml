@@ -1,0 +1,47 @@
+﻿ @model NewsAggregator.Core.DataTransferObjects.NewsWithRssNameDto
+
+@{
+    ViewData["Title"] = "News Details";
+}
+
+<h1>News Details</h1>
+
+<div>
+    <h4>News</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Article)
+        </dt>
+        <dd class = "col-sm-10">
+            @Model.Article
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Url)
+        </dt>
+        <dd class = "col-sm-10">
+            @Model.Url
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Body)
+        </dt>
+        <dd class = "col-sm-10">
+            @Model.Body
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Rating)
+        </dt>
+        <dd class = "col-sm-10">
+            @Model.Rating
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.RssSourceName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Model.RssSourceName
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>

@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NewsAggregator.DAL.Entities\NewsAggregator.DAL.Core.csproj" />
+    <ProjectReference Include="..\NewsAggregator.DAL.Interfaces\NewsAggregator.DAL.Repositories.Interfaces.csproj" />
+    <ProjectReference Include="..\NewsAggregator.DAL.Repositiries\NewsAggregator.DAL.Repositories.Implementation.csproj" />
+    <ProjectReference Include="..\NewsAggrigator.Core.Interfaces.Servies\NewsAggregator.Core.Services.Interfaces.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Mapping\" />
+    <Folder Include="NewsParser\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.34" />
+    <PackageReference Include="System.ServiceModel.Syndication" Version="5.0.0" />
+  </ItemGroup>
+
+</Project>

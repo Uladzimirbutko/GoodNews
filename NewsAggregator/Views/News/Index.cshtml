@@ -1,0 +1,25 @@
+﻿@using NewsAggregator.HtmlHelpers
+@model NewsAggregator.Models.ViewModels.News.NewsListWithPaginationInfo
+
+@{
+    ViewData["Title"] = "News Index";
+}
+
+<h1>News</h1>
+
+<p>
+    <a asp-controller="News" asp-action="AggregateNews">Добавить новые новости</a>
+</p>
+
+<div class="row">
+    @foreach (var item in Model.News)
+    {
+        await Html.RenderPartialAsync("ShortNewsPreview", item);
+    }
+    <ul class="pagination">
+        @Html.CreatePagination(Model.PageInfo, i => Url.Action("Index",
+            new { page = i, soureId = Model.News.FirstOrDefault()?.RssSourceId }))
+    </ul>
+</div>
+    <!--<pagination page-model="Model.PageInfo" page-action="Index"></pagination>-->   @*уродский хелпер
+        для постраничного вывода*@

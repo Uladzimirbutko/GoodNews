@@ -1,0 +1,19 @@
+﻿@model NewsAggregator.Core.DataTransferObjects.NewsDto
+
+
+    <div class="card"style="width: 20rem;">
+        <div class="card-body">
+            <h5 class="card-title">@Model.Article </h5>
+            <p class="card-text">
+                @Model.Summary
+            </p>
+            <div>
+                <a class="btn btn-link" asp-action="Details" asp-route-id="@Model.Id">Читать на агрегаторе</a>
+            </div>
+            <div>
+                <a class="btn btn-link" asp-host="Onliner.by">Читать в источнике</a>
+            </div>
+        </div>
+    </div>
+
+
