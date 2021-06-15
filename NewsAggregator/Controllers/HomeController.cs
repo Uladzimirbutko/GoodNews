@@ -1,9 +1,7 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NewsAggregator.Models;
-using Serilog;
 
 namespace NewsAggregator.Controllers
 {
@@ -18,17 +16,7 @@ namespace NewsAggregator.Controllers
 
         public IActionResult Index()
         {
-            // It's start Test Logger. He writes to the LoggerFile.log system Fatal exception
-            //try
-            //{
-            //    throw new NullReferenceException("Test Exception");
-                
-            //}
-            //catch (Exception e)
-            //{
-            //    Log.Fatal(e, "Unhanded exception wat throwed  by app");
-            //    throw;
-            //}
+            
             return View();
         }
 

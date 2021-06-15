@@ -35,41 +35,5 @@ namespace NewsAggregator.Services.Implementation
             return _mapper.Map<RssSourceDto>(rss);
         }
 
-        public async Task<IEnumerable<RssSourceDto>> GetRssSourcesByIds(IEnumerable<Guid> ids)
-        {
-            return await _unitOfWork.Rss.FindBy(source => ids
-                    .Contains(source.Id))
-                .Select(source => _mapper.Map<RssSourceDto>(source))
-                .ToListAsync();
-        }
-
-
-        public async Task AddRssSource(RssSourceDto rssSource)
-        {
-            var add = _mapper.Map<RssSource>(rssSource);
-
-            await _unitOfWork.Rss.Add(add);
-            await _unitOfWork.SaveChangesAsync();
-        }
-
-        public async Task<RssSourceDto> EditRssSource(RssSourceDto rssSource)
-        {
-            var oldRss = await _unitOfWork.Rss.GetById(rssSource.Id);
-
-            var editRss = _mapper.Map<RssSource>(rssSource);
-
-            await _unitOfWork.Rss.Remove(oldRss);
-            await _unitOfWork.Rss.Add(editRss);
-            await _unitOfWork.SaveChangesAsync();
-
-            return await GetRssSourceById(editRss.Id);
-        }
-
-        public async Task DeleteRssSource(RssSourceDto rssSource)
-        {
-            var oldRss = await _unitOfWork.Rss.GetById(rssSource.Id);
-            await _unitOfWork.Rss.Remove(oldRss);
-            await _unitOfWork.SaveChangesAsync();
-        }
     }
 }

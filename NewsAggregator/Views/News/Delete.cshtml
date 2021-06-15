@@ -1,4 +1,4 @@
-﻿@model NewsAggregator.Core.DataTransferObjects.NewsWithRssNameDto
+﻿@model NewsAggregator.Core.DataTransferObjects.NewsDto
 
 @{
     ViewData["Title"] = "Delete";
@@ -36,10 +36,10 @@
             @Html.DisplayFor(model => model.Rating)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.RssSourceName)
+            @Html.DisplayNameFor(model => model.RssSource.SourceName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.RssSourceName)
+            @Html.DisplayFor(model => model.RssSource.SourceName)
         </dd>
     </dl>
     

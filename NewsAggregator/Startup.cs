@@ -15,7 +15,8 @@ using NewsAggregator.DAL.Repositories.Implementation.Repositories;
 using NewsAggregator.DAL.Repositories.Interfaces;
 using NewsAggregator.Services.Implementation;
 using NewsAggregator.Services.Implementation.Mapping;
-using NewsAggregator.Services.Implementation.NewsParser;
+using NewsAggregator.Services.Implementation.NewsParsers;
+using NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers;
 
 namespace NewsAggregator
 {

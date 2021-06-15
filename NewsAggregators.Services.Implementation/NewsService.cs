@@ -5,28 +5,58 @@ using NewsAggregator.DAL.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.ServiceModel.Syndication;
 using System.Threading.Tasks;
 using System.Xml;
 using AutoMapper;
-using Microsoft.Extensions.Configuration;
 using NewsAggregator.DAL.Repositories.Implementation;
-using System.ServiceModel.Syndication;
+using NewsAggregator.Services.Implementation.NewsParsers;
+using Serilog;
 
 namespace NewsAggregator.Services.Implementation
 {
     public class NewsService : INewsService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
-        public NewsService(IUnitOfWork unitOfWork, IMapper mapper, IConfiguration configuration)
+        private readonly IRssSourceService _rssSourceService;
+
+        public NewsService(IUnitOfWork unitOfWork, IMapper mapper, IRssSourceService rssSourceService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _configuration = configuration;
+            _rssSourceService = rssSourceService;
         }
 
-        public async Task<IEnumerable<NewsDto>> GetNews(Guid id)
+        public async Task<IEnumerable<NewsDto>> AggregateNews()
+        {
+            var sources = await _rssSourceService.GetAllRssSources();
+
+            var newsUrls = await _unitOfWork.News.GetAllNews()
+                .Select(n => n.Url)
+                .ToListAsync();
+
+            var newsInfos = new List<NewsDto>();
+
+            var parser = new Parser(_mapper);
+
+            try
+            {
+                newsInfos.AddRange(parser.Parse(sources, newsUrls));
+
+                await AddRange(newsInfos);
+
+                Log.Information($"Aggregation was succeeded");
+            }
+            catch
+            {
+                Log.Error($"Aggregation was failed");
+            }
+
+            return newsInfos;
+        }
+
+        public async Task<IEnumerable<NewsDto>> GetAllNews()
         {
             return await _unitOfWork.News
                 .FindBy(n => n.Id.Equals(n.Id))
@@ -36,117 +66,73 @@ namespace NewsAggregator.Services.Implementation
 
         public async Task<IEnumerable<NewsDto>> GetNewsBySourceId(Guid? id)
         {
-            var news = id.HasValue
-                ? await _unitOfWork.News
-                    .FindBy(n
-                        => n.RssSourceId.Equals(id.GetValueOrDefault()))
-                    .ToListAsync()
-                : await _unitOfWork.News
-                    .FindBy(n => n.Id != null)
-                    .ToListAsync();
+            var news = new List<News>();
+            try
+            {
+                news = id.HasValue
+                    ? await _unitOfWork.News
+                        .FindBy(n
+                            => n.RssSourceId.Equals(id.GetValueOrDefault()))
+                        .ToListAsync()
+                    : await _unitOfWork.News
+                        .FindBy(n => n.Id != null)
+                        .ToListAsync();
+            }
+            catch (Exception e)
+            {
+                Log.Error($"Error in GetNewsBySourceId. {e.Message}");
+
+            }
 
             return news
                 .Select(n => _mapper.Map<NewsDto>(n))
-                .ToList();
+                .OrderByDescending(dt => dt.PublicationDate);
         }
-
 
         public async Task<NewsDto> GetNewsById(Guid id)
         {
-            var entity = await _unitOfWork.News.GetById(id);
-            return _mapper.Map<NewsDto>(entity);
-        }
-
-        public async Task<NewsWithRssNameDto> GetNewsWithRssSourceNameById(Guid id)
-        {
-            var result = await _unitOfWork.News
-                .FindBy(n => n.RssSourceId.Equals(id),
-                    n => n.RssSource)
-                .Select(n => new NewsWithRssNameDto()
-                {
-                    Id = n.Id,
-                    Article = n.Article,
-                    Url = n.Url,
-                    Body = n.Body,
-                    Summary = n.Summary,
-                    PublicationDate = n.PublicationDate,
-                    Rating = n.Rating,
-                    RssSourceName = n.RssSource.SourceName,
-                    RssSourceId = n.RssSource.Id
-
-                }).FirstOrDefaultAsync();
-
-            return result;
-        }
-
-        public async Task AddRange(IEnumerable<NewsDto> news)
-        {
-            var addRange = news.Select(ent => _mapper.Map<News>(ent)).ToList();
-
-            await _unitOfWork.News.AddRange(addRange);
-            await _unitOfWork.SaveChangesAsync();
+            return _mapper.Map<NewsDto>(await _unitOfWork.News.GetById(id));
         }
 
         public async Task AddNews(NewsDto news)
         {
-            var entity = _mapper.Map<News>(news);
-            await _unitOfWork.News.Add(entity);
-            await _unitOfWork.SaveChangesAsync();
-
-        }
-
-        public async Task<IEnumerable<NewsDto>> AggregateNewsFromRss()
-        {
-            return null;
-        }
-
-        public async Task<IEnumerable<NewsDto>> GetNewsInfoFromRssSource(RssSourceDto rssSource) // pars rss source 
-        {
-            var news = new List<NewsDto>();
-            using (var reader = XmlReader.Create(rssSource.Url))
+            try
             {
-                var feed = SyndicationFeed.Load(reader);
-                reader.Close();
-                if (feed.Items.Any())
-                {
-                    var currentNewsUrls = await _unitOfWork.News.GetAllNews()
-                         .Select(n => n.Url)
-                         .ToListAsync();
-
-                    foreach (var syndicationItem in feed.Items)
-                    {
-                        if (!currentNewsUrls.Any(url => url.Equals(syndicationItem.Id)))
-                        {
-                            var newsDto = new NewsDto()
-                            {
-                                Id = Guid.NewGuid(),
-                                RssSourceId = rssSource.Id,
-                                Url = syndicationItem.Id,
-                                Article = syndicationItem.Title.Text,
-                                Summary = syndicationItem.Summary.Text,
-                                PublicationDate = syndicationItem.PublishDate
-                                    .LocalDateTime
-                            };
-                            news.Add(newsDto);
-                        }
-
-                    }
-                }
-
+                await _unitOfWork.News.Add(_mapper.Map<News>(news));
+                await _unitOfWork.SaveChangesAsync();
             }
+            catch (Exception e)
+            {
+                Log.Error($"Error in Add one News. {e.Message}");
+            }
+        }
 
-            return news;
+        public async Task AddRange(IEnumerable<NewsDto> news)
+        {
+            try
+            {
+                var addRange = news.Select(ent => _mapper.Map<News>(ent));
+                await _unitOfWork.News.AddRange(addRange);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Log.Error($"Error in AddRange. {e.Message}");
+            }
         }
 
         public async Task DeleteNews(NewsDto news)
         {
-            var oldNews = await _unitOfWork.News.GetById(news.Id);
-            await _unitOfWork.News.Remove(oldNews);
-            await _unitOfWork.SaveChangesAsync();
-
+            try
+            {
+                var oldNews = await _unitOfWork.News.GetById(news.Id);
+                await _unitOfWork.News.Remove(oldNews);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                Log.Error($"Error in Delete. {e.Message}");
+            }
         }
-
-
-
     }
 }

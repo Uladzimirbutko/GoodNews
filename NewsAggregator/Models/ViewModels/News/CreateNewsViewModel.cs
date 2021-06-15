@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using NewsAggregator.Core.DataTransferObjects;
 
 namespace NewsAggregator.Models.ViewModels.News
 {

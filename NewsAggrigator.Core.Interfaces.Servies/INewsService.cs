@@ -7,18 +7,14 @@ namespace NewsAggregator.Core.Services.Interfaces
 {
     public interface INewsService
     {
-        Task<IEnumerable<NewsDto>> GetNews(Guid id);
+        Task<IEnumerable<NewsDto>> AggregateNews();
+        Task<IEnumerable<NewsDto>> GetAllNews();
         Task<IEnumerable<NewsDto>> GetNewsBySourceId(Guid? id);
+        
         Task<NewsDto> GetNewsById(Guid id);
-        Task<NewsWithRssNameDto> GetNewsWithRssSourceNameById(Guid id);
-
+        
         Task AddNews(NewsDto news);
         Task AddRange(IEnumerable<NewsDto> news);
-
-
-        Task<IEnumerable<NewsDto>> GetNewsInfoFromRssSource(RssSourceDto rssSource);
-
-
         Task DeleteNews(NewsDto news);
     }
 }

@@ -11,15 +11,15 @@ namespace NewsAggregator.DAL.Core.Entities
         public string Url { get; set; }
         public string Body { get; set; }
         public string Summary { get; set; }
-        public float Rating { get; set; }
+        public string? TitleImage { get; set; }
         public string? Category { get; set; }
+        public float Rating { get; set; }
         public DateTime? PublicationDate { get; set; }
-
 
         public Guid RssSourceId { get; set; } //FK
         public virtual RssSource RssSource { get; set; } // для сопоставления таблиц
 
-        public virtual ICollection<Comment> Comments { get; set; } 
+        public virtual ICollection<Comment> Comments { get; set; }
 
     }
 }

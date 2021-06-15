@@ -7,10 +7,12 @@ namespace NewsAggregator.Core.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<IEnumerable<UserDto>> GetUsers();
+        Task<IEnumerable<UserDto>> GetAllUsers();
         Task<UserDto> GetUserById(Guid id);
-        string GetPasswordHash(string modelPassword);
-        Task<bool> RegisterUser(UserDto model);
+        Task<UserDto> GetUserByCommentId(Guid commentId);
+        Task<UserDto> GetUserByLogin(string login);
         Task<UserDto> GetUserByEmail(string email);
+        string GetPasswordHash(string password);
+        Task<bool> RegisterUser(UserDto model);
     }
 }

@@ -9,10 +9,7 @@ namespace NewsAggregator.Core.Services.Interfaces
     {
         Task <IEnumerable<RssSourceDto>> GetAllRssSources();
         Task <RssSourceDto> GetRssSourceById(Guid id);
-        Task<IEnumerable<RssSourceDto>> GetRssSourcesByIds (IEnumerable<Guid> ids);
+        
 
-        Task AddRssSource(RssSourceDto rssSource);
-        Task<RssSourceDto> EditRssSource(RssSourceDto rssSource);
-        Task DeleteRssSource(RssSourceDto rssSource);
     }
 }
