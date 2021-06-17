@@ -10,7 +10,7 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
             throw new System.NotImplementedException();
         }
 
-        public string Description(string description)
+        public string Summary(string description)
         {
             throw new System.NotImplementedException();
         }

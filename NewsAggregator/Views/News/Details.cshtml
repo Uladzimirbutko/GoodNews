@@ -1,47 +1,22 @@
-﻿ @model NewsAggregator.Core.DataTransferObjects.NewsWithRssNameDto
+﻿@model NewsAggregator.Core.DataTransferObjects.NewsDto
 
 @{
     ViewData["Title"] = "News Details";
 }
 
-<h1>News Details</h1>
+<h1>@Model.Article</h1>
 
-<div>
-    <h4>News</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Article)
-        </dt>
-        <dd class = "col-sm-10">
-            @Model.Article
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Url)
-        </dt>
-        <dd class = "col-sm-10">
-            @Model.Url
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Body)
-        </dt>
-        <dd class = "col-sm-10">
-            @Model.Body
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Rating)
-        </dt>
-        <dd class = "col-sm-10">
-            @Model.Rating
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.RssSourceName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Model.RssSourceName
-        </dd>
-    </dl>
+
+<img src="@Model.TitleImage" class="img-fluid" alt="Img">
+
+<div class="align-content-center">
+    @Html.Raw(Model.Body)
 </div>
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-light" href="@Model.Url">Читать в источнике</a>
+</div>
+<div>
+    <a class="btn btn-info" asp-action="Index">
+        Назад
+    </a>
 </div>

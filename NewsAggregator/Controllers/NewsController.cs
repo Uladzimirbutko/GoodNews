@@ -56,35 +56,48 @@ namespace NewsAggregator.Controllers
         // GET: News/Details/5
         public async Task<IActionResult> Details(Guid id)
         {
-            //if (id == null)
-            //{
-            //    return NotFound();
-            //}
-            //var news = await _newsService.GetNewsBySourceId(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var news = await _newsService.GetNewsById(id);
 
 
-            //if (news == null)
-            //{
-            //    return NotFound();
-            //}
+            if (news == null)
+            {
+                return NotFound();
+            }
 
-            //var viewModel = new NewsWithRssNameDto()
-            //{
-            //    Id = news.Id,
-            //    Article = news.Article,
-            //    Body = news.Body,
-            //    Url = news.Url,
-            //    Rating = news.Rating,
-            //    RssSourceId = news.RssSourceId,
-            //    RssSourceName = news.RssSourceName // Here will Null reference exception -> RssSource is null
-            //};
-            return View();
+            var viewModel = new NewsDto()
+            {
+                Id = news.Id,
+                Article = news.Article,
+                Body = news.Body,
+                Url = news.Url,
+                Rating = news.Rating,
+                RssSourceId = news.RssSourceId,
+                PublicationDate = news.PublicationDate, // Here will Null reference exception -> RssSource is null
+                Summary = news.Summary,
+                Category = news.Category,
+                TitleImage = news.TitleImage
+            };
+            return View(viewModel);
         }
 
         public async Task<IActionResult> AggregateNews()
         {
-            await _newsService.AggregateNews();
+            return View();
+        }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AggregateNews(NewsDto news)
+        {
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            await _newsService.AggregateNews();
+            stopwatch.Stop();
+            Log.Information($"Время аггрегации онлайнера {stopwatch.ElapsedMilliseconds}");
             return RedirectToAction(nameof(Index));
         }
 
