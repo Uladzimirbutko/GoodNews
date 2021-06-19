@@ -3,6 +3,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel.Syndication;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
@@ -12,7 +14,7 @@ using Serilog;
 
 namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
 {
-    public class S13Parser :IWebPageParser
+    public class S13Parser : IWebPageParser
     {
         private readonly Guid _sourceId = new("B696BEE6-4313-454D-B54D-36B214079C18");
 
@@ -26,6 +28,8 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
 
             Parallel.ForEach(feed.Items, item =>
             {
+            //    foreach (var item in feed.Items)
+            //{
                 var news = new News()
                 {
                     Id = Guid.NewGuid(),
@@ -35,29 +39,35 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
                     PublicationDate = item.PublishDate.UtcDateTime,
                     RssSourceId = _sourceId,
                     Url = item.Id,
-                    TitleImage = BodyParser(item.Summary.Text),
-                    Category = item.Categories.ToString(),
+                    TitleImage = "/img/S13.jpg",
+                    Category = item.Categories[0].Name.ToUpper(),
 
                 };
                 newsCollection.Add(news);
+            //}
             });
             return newsCollection;
         }
 
-        public string Summary(string description)
+        public string Summary(string summary)
         {
-            var document = new HtmlDocument();
-            document.LoadHtml(description);
-            var res = document.DocumentNode.InnerText;
+            try
+            {
+                var document = new HtmlDocument();
+                document.LoadHtml(summary);
+                var res = document.DocumentNode.InnerText;
 
-            return HttpUtility.HtmlDecode(res);
+                return HttpUtility.HtmlDecode(res);
+            }
+            catch (Exception e)
+            {
+                Log.Error($"Error in S13Parser in Summary. Exception: {e}.Message: {e.Message}");
+                return summary;
+            }
         }
 
         public string ImageParser(string url)
         {
-            var nodes = new HtmlWeb().Load(url)?
-                .DocumentNode.SelectSingleNode(("//div[@class='content']"))?//<div class="content">
-                .ChildNodes?.Nodes();
             return null;
         }
 
@@ -65,26 +75,38 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
         {
             try
             {
-                var nodes = new HtmlWeb().Load(bodyUrl)?
-                    .DocumentNode.SelectSingleNode(("//div[@class='content']"))?
-                    .ChildNodes?.Nodes();
+                var nodes = new HtmlWeb()
+                    .Load(bodyUrl)?.DocumentNode
+                    .SelectNodes("//div[@class='content']")
+                    .Nodes();
 
                 if (nodes == null)
                 {
-                    throw new Exception($"News with Url {bodyUrl} not invalid");
+                    Log.Information($"News Url {bodyUrl} is not invalid");
+                    return bodyUrl;
                 }
 
-                return HttpUtility.HtmlDecode(nodes
-                    .Where(n => n.ParentNode.Name == "p") //|| n.ParentNode.Name == "h2")
-                    .Where(i => !i.InnerText.StartsWith("Наш канал в") && !i.InnerText.StartsWith("Есть о чем рассказать?"))
-                    .Aggregate("", (current, n) => current + n.InnerText));
+                return  HttpUtility.HtmlDecode(nodes
+                    .Where(n => n.Name == "p" || n.Name == "ul")
+                    .Where(n => !n.InnerHtml.Contains("span"))
+                    .Aggregate("", (current, n) => current + $"{CheckingStringLength(n.InnerHtml)} ")); 
+                
             }
 
             catch (Exception e)
             {
-                Log.Error($"Error in Onliner Parser in Body. Exception: {e}.Message: {e.Message}");
+                Log.Error($"Error in S13Parser in Body. Exception: {e}.Message: {e.Message}");
                 return bodyUrl;
             }
+        }
+        private  string CheckingStringLength(string str)
+        {
+
+            if (str.Length > 30)
+            {
+                str = str.Insert(0, "<p>");
+            }
+            return str;
         }
     }
 }

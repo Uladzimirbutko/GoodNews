@@ -35,7 +35,7 @@ namespace NewsAggregator.Controllers
             }
             var news = (await _newsService.GetAllNews()).ToList();
 
-            var pageSize = 10;
+            var pageSize = 12;
 
             var newsPerPages = news.Skip((page - 1) * pageSize).Take(pageSize);
 

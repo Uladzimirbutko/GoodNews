@@ -28,16 +28,16 @@ namespace NewsAggregator.Services.Implementation.NewsParsers
 
                 switch (sourceDto.SourceName)
                 {
-                    case "Onliner":
-                        {
-                            var parser = new OnlinerParser();
+                    //case "Onliner": //выполнено
+                    //    {
+                    //        var parser = new OnlinerParser();
 
-                            var parsedList = parser.Parsing(sourceDto.Url);
+                    //        var parsedList = parser.Parsing(sourceDto.Url);
 
-                            newsInfos.AddRange(parsedList.Select(news => _mapper.Map<NewsDto>(news)));
+                    //        newsInfos.AddRange(parsedList.Select(news => _mapper.Map<NewsDto>(news)));
 
-                            break;
-                        }
+                    //        break;
+                    //    }
 
                     //case "S13":
                     //    {
@@ -50,28 +50,28 @@ namespace NewsAggregator.Services.Implementation.NewsParsers
                     //        break;
                     //    }
 
-                        //case "4pda":
-                        //    {
-                        //        var parser = new FourPdaParser();
+                    //case "4pda":
+                    //    {
+                    //        var parser = new FourPdaParser();
 
-                        //        var parsedList = parser.Parsing(sourceDto.Url);
+                    //        var parsedList = parser.Parsing(sourceDto.Url);
 
-                        //        newsInfos.AddRange(parsedList.Select(news => _mapper.Map<NewsDto>(news)));
+                    //        newsInfos.AddRange(parsedList.Select(news => _mapper.Map<NewsDto>(news)));
 
-                        //        break;
-                        //    }
+                    //        break;
+                    //    }
 
 
-                        //case "Wylsacom":
-                        //    {
-                        //        var parser = new WylsacomParser();
+                    case "Wylsacom":
+                        {
+                            var parser = new WylsacomParser();
 
-                        //        var parsedList = parser.Parsing(sourceDto.Url);
+                            var parsedList = parser.Parsing(sourceDto.Url);
 
-                        //        newsInfos.AddRange(parsedList.Select(item => _mapper.Map<NewsDto>(item)));
+                            newsInfos.AddRange(parsedList.Select(item => _mapper.Map<NewsDto>(item)));
 
-                        //        break;
-                        //    }
+                            break;
+                        }
                 }
             });
 

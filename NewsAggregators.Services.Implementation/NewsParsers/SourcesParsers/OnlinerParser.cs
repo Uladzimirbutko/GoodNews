@@ -26,10 +26,9 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
 
             var newsCollection = new ConcurrentBag<News>();
 
-            //Parallel.ForEach(feed.Items, item =>
-            //{
-            foreach (var item in feed.Items)
+            Parallel.ForEach(feed.Items, item =>
             {
+
                 var news = new News()
                 {
                     Id = Guid.NewGuid(),
@@ -40,14 +39,10 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
                     RssSourceId = _sourceId,
                     Url = item.Id,
                     TitleImage = ImageParser(item.Id),
-                    Category = item.Categories[0].Name
-
+                    Category = item.Categories[0].Name.ToUpper()
                 };
-                
-
                 newsCollection.Add(news);
-
-            }//);
+            });
 
             newsCollection.OrderByDescending(pd => pd.PublicationDate);
 
@@ -77,85 +72,23 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
 
             try
             {
-                //var nodes = new HtmlWeb().Load(bodyUrl)?
-                //    .DocumentNode.SelectSingleNode(("//div[@class='news-text']"))?
-                //    .ChildNodes?.Nodes();
+
                 var nodes = new HtmlWeb().Load(bodyUrl)?
                     .DocumentNode.SelectSingleNode(("//div[@class='news-text']"))?
                     .OuterHtml;
+
                 if (nodes == null)
                 {
                     throw new Exception($"News with Url {bodyUrl} not invalid");
                 }
 
-                #region old parsing
-                //var aggregate = nodes
-                //    .Where(n => n.ParentNode.Name == "p" || n.ParentNode.Name == "h2")
-                //    .Aggregate("", (current, n) => current + $"{CheckingStringLength(n.InnerText)}");
 
-
-                //var removeText = new List<string>()
-                //{
-                //    "Читайте дальше:",
-                //    "в Каталоге",
-                //    "Перепечатка текста",
-                //    "Наш канал в",
-                //    "Есть о чем рассказать?",
-                //    "Знакомы с ситуацией?",
-                //    "Пишите нам:",
-                //    "Auto.Onliner",
-                //    "(будет дополнено)",
-                //    "Читайте также:"
-                //};
-
-                //foreach (var index in from remove in removeText where aggregate.Contains(remove) select aggregate.LastIndexOf(remove))
-                //{
-                //    aggregate = aggregate.Remove(index).TrimEnd();
-
-                //    if (!aggregate.EndsWith("."))
-                //    {
-                //        var len = aggregate.Length;
-                //        aggregate = aggregate.Insert(len - 1, ".");
-                //    }
-                //}
-
-                //var decodeString = HttpUtility.HtmlDecode(aggregate);
-
-
-                #endregion
-
-
-                #region video replace
-
-
-
-                // получаем блок iframe весь
                 var iframeReplace = @"(<iframe.*?>)";
-
                 nodes = Regex.Replace(nodes, iframeReplace, "");
 
-                //var arrayNodes = Regex.Split(nodes, iframeReplace);
 
-
-                //for (int i = 0; i < arrayNodes.Length; i++)
-                //{
-                //    if (arrayNodes[i].Contains("iframe"))
-                //    {
-                //        var videoLink = Regex.Match(arrayNodes[i], @"https(.*?)\s"); //забираем ссылку
-                //        var oldIframe = arrayNodes[i];
-                //        var newIframe = $"<iframe class=\"embed-responsive-item\" src=\"{videoLink.Value} allowfullscreen>";
-                //        arrayNodes[i] = arrayNodes[i].Replace(oldIframe, newIframe);
-
-                //    }
-                //}
-
-                //nodes = arrayNodes.Aggregate("", (s, s1) => s + s1);
-
-                #endregion
 
                 #region Replace styles and more
-
-
 
                 var oldValue = new List<string>()
                 {
@@ -177,9 +110,9 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
                         {
                             nodes = nodes.Replace(old, "<img class=\"img-fluid\"");
                         }
-                        
 
-                        
+
+
 
                     }
                 }
@@ -197,7 +130,7 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
                     "<p style=\"text-align: right;",
                     "<h2 style=\"text-align: center;",
                     "Auto.Onliner",
-                    "<div class=\"news-vote\""
+                    "<div class=\"news-vote\"",
 
 
                 };
@@ -223,16 +156,6 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
                 Log.Error($"Error in Onliner Parser in Body. Exception: {e}.Message: {e.Message}");
                 return bodyUrl;
             }
-        }
-
-        public string CheckingStringLength(string str)
-        {
-
-            if (str.Length > 30)
-            {
-                str = str.Insert(0, "<p>");
-            }
-            return str;
         }
 
     }
