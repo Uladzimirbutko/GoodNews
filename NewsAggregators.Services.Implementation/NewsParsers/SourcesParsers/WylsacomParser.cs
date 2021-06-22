@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
 using System.ServiceModel.Syndication;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -35,25 +34,22 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
                     Article = item.Title.Text,
                     Body = BodyParser(item.Id),
                     Summary = Summary(item.Summary.Text),
-                    PublicationDate = item.PublishDate.UtcDateTime,
+                    PublicationDate = item.PublishDate.LocalDateTime,
                     RssSourceId = _sourceId,
                     Url = item.Id,
                     TitleImage = ImageParser(item.Id),
                     Category = item.Categories[0].Name.ToUpper(),
 
                 };
-                newsCollection.Add(news);
+
+                if (!String.IsNullOrEmpty(news.Body) && !String.IsNullOrEmpty(news.Summary))
+                {
+                    newsCollection.Add(news);
+                }
             });
             //}
             return newsCollection;
         }
-
-
-
-
-
-
-
 
         public string Summary(string description)
         {
@@ -69,8 +65,14 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
             var nodes = new HtmlWeb().Load(url)?
                 .DocumentNode.SelectSingleNode("//section[@class='article__img']").OuterHtml;
             var patternLinkImg = "(https.*?jpg)";
+            nodes = Regex.Match(nodes, patternLinkImg).Value;
 
-            return Regex.Match(nodes, patternLinkImg).Value;
+            if (string.IsNullOrEmpty(nodes))
+            {
+                return "/img/Wylsacom.jpg";
+            }
+            return nodes;
+
 
 
         }
@@ -92,11 +94,11 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
 
                 nodes = nodes.Replace("<div class=\"content__inner\">", "<div class=\"align-content-center\">");
                 nodes = nodes.Replace("padding-bottom:75%", "padding-bottom:10px");
-                
+
                 var embededPostRegex = "(<a class=\"embeded-post\"((?:.|\n)*)<\\/a>)";
 
                 nodes = Regex.Replace(nodes, embededPostRegex, "");
-                
+
 
                 return nodes;
 

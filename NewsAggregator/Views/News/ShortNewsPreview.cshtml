@@ -1,17 +1,19 @@
 ﻿@model NewsAggregator.Core.DataTransferObjects.NewsDto
 
 
-<div class="card" style="width: 20rem;">
+<div class="card" style="width: 18rem;">
+    <small>Дата публикации: @Model.PublicationDate</small>
     <img src="@Model.TitleImage" class="card-img-top" alt="img-card">
     <div class="card-body">
         <h5 class="card-title">@Model.Article </h5>
         <p class="card-text">
             @Model.Summary
         </p>
-        <div>
-            <a class="btn btn-primary" asp-action="Details" asp-route-id="@Model.Id">Подробнее</a>
-        </div>
-        
+
+
+    </div>
+    <div>
+        <a class="btn btn-primary" asp-action="Details" asp-route-id="@Model.Id">Подробнее</a>
     </div>
 </div>
 

@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NewsAggregator.Filters;
 using NewsAggregator.Models;
 
 namespace NewsAggregator.Controllers
@@ -20,6 +21,7 @@ namespace NewsAggregator.Controllers
             return View();
         }
 
+       
         public IActionResult Privacy()
         {
             return View();

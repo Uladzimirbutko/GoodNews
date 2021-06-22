@@ -1,0 +1,13 @@
+﻿@model CustomErrorViewModel
+@{
+    ViewData["Title"] = "Error";
+}
+<div class="col-12 text-center">
+    <h2 class="text-danger" style="color:black;">Oops...! Ошибка. Что-то пошло не так.</h2>
+    <h3>Пожалуйста, перейдите на <a asp-action="Index">главную</a> страницу, либо свяжитесь с разработчиком, что бы скорее исправить ошибку.</h3>
+    <div>
+        <a asp-action="Index">
+            <img src="~/img/error.png" alt="Error" class="img-fluid">
+        </a>
+    </div><br /><br /><br />
+</div>

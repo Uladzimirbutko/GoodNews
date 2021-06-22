@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.ServiceModel.Syndication;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -35,16 +33,19 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
                     Article = item.Title.Text,
                     Body = BodyParser(item.Id),
                     Summary = Summary(item.Summary.Text),
-                    PublicationDate = item.PublishDate.UtcDateTime,
+                    PublicationDate = item.PublishDate.LocalDateTime,
                     RssSourceId = _sourceId,
                     Url = item.Id,
                     TitleImage = ImageParser(item.Id),
                     Category = item.Categories[0].Name.ToUpper()
                 };
-                newsCollection.Add(news);
+                if (!String.IsNullOrEmpty(news.Body) && !String.IsNullOrEmpty(news.Summary))
+                {
+                    newsCollection.Add(news);
+                }
+
             });
 
-            newsCollection.OrderByDescending(pd => pd.PublicationDate);
 
             return newsCollection;
         }
@@ -60,11 +61,18 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
 
         public string ImageParser(string url)
         {
-            var nodes = new HtmlWeb().Load(url)?
-                .DocumentNode.SelectSingleNode(("//div[@class='news-header__image']")).OuterHtml;
-            var regex = new Regex(@"(https?:\/\/)?([\w-]{1,32}\.[\w-]{1,32})[^\s@]*jpeg").Match(nodes);
 
-            return regex.Value;
+            var nodes = new HtmlWeb().Load(url)?
+                    .DocumentNode.SelectSingleNode(("//div[@class='news-header__image']")).OuterHtml;
+            var regex = new Regex(@"(https?:\/\/)?([\w-]{1,32}\.[\w-]{1,32})[^\s@]*jpeg").Match(nodes).Value;
+
+            if (String.IsNullOrEmpty(regex))
+            {
+                return "/img/Onliner.jpg";
+            }
+
+            return regex;
+
         }
 
         public string BodyParser(string bodyUrl)

@@ -36,13 +36,14 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Filters\" />
       <Folder Include="wwwroot\lib\bootstrap\dist\css\" />
       <Folder Include="wwwroot\lib\bootstrap\dist\js\" />
     </ItemGroup>
 
     <ItemGroup>
       <Content Update="C:\Users\wladi\.nuget\packages\bootstrap\5.0.1\contentFiles\any\any\wwwroot\css\bootstrap.css">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
     </ItemGroup>
 

@@ -2,17 +2,20 @@ using System;
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NewsAggregator.DAL.Core;
 using EasyData.Services;
+using Microsoft.AspNetCore.Http;
 using NewsAggregator.Core.Services.Interfaces;
 using NewsAggregator.DAL.Core.Entities;
 using NewsAggregator.DAL.Repositories.Implementation;
 using NewsAggregator.DAL.Repositories.Implementation.Repositories;
 using NewsAggregator.DAL.Repositories.Interfaces;
+using NewsAggregator.Filters;
 using NewsAggregator.Services.Implementation;
 using NewsAggregator.Services.Implementation.Mapping;
 using NewsAggregator.Services.Implementation.NewsParsers;
@@ -70,10 +73,20 @@ namespace NewsAggregator
 
             #endregion
 
+            services.AddScoped<CustomExceptionFilterAttribute>();
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options => 
+                    options.LoginPath = new PathString("/Account/Login"));
+
             services.AddRazorPages().AddRazorRuntimeCompilation();
 
             services.AddSingleton(mapper);
-            services.AddControllersWithViews();
+
+            services.AddControllersWithViews().AddMvcOptions(opt =>
+            {
+                opt.Filters.Add(typeof(CustomExceptionFilterAttribute));
+            });
         }
 
         // This method gets called by the runtime.
@@ -97,6 +110,7 @@ namespace NewsAggregator
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
@@ -111,6 +125,7 @@ namespace NewsAggregator
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
             });
 
 

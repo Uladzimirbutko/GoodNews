@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -33,7 +32,7 @@ namespace NewsAggregator.Controllers
             {
                 return NotFound();
             }
-            var news = (await _newsService.GetAllNews()).ToList();
+            var news = (await _newsService.GetAllNews()).OrderByDescending(dto => dto.PublicationDate).ToList();
 
             var pageSize = 12;
 

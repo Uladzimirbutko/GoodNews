@@ -3,8 +3,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel.Syndication;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml;
@@ -36,16 +34,21 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
                     Article = item.Title.Text,
                     Body = BodyParser(item.Id),
                     Summary = Summary(item.Summary.Text),
-                    PublicationDate = item.PublishDate.UtcDateTime,
+                    PublicationDate = item.PublishDate.LocalDateTime.ToLocalTime(),
                     RssSourceId = _sourceId,
                     Url = item.Id,
                     TitleImage = "/img/S13.jpg",
                     Category = item.Categories[0].Name.ToUpper(),
 
                 };
-                newsCollection.Add(news);
-            //}
+                if (!String.IsNullOrEmpty(news.Body) && !String.IsNullOrEmpty(news.Summary))
+
+                {
+                    newsCollection.Add(news);
+                }
+                //}
             });
+
             return newsCollection;
         }
 
