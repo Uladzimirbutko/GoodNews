@@ -39,10 +39,11 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
                     TitleImage = ImageParser(item.Id),
                     Category = item.Categories[0].Name.ToUpper()
                 };
-                if (!String.IsNullOrEmpty(news.Body) && !String.IsNullOrEmpty(news.Summary))
+                if (!string.IsNullOrEmpty(news.Body) && !string.IsNullOrEmpty(news.Summary))
                 {
                     newsCollection.Add(news);
                 }
+
 
             });
 
@@ -62,16 +63,24 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
         public string ImageParser(string url)
         {
 
-            var nodes = new HtmlWeb().Load(url)?
-                    .DocumentNode.SelectSingleNode(("//div[@class='news-header__image']")).OuterHtml;
-            var regex = new Regex(@"(https?:\/\/)?([\w-]{1,32}\.[\w-]{1,32})[^\s@]*jpeg").Match(nodes).Value;
-
-            if (String.IsNullOrEmpty(regex))
+            try
             {
+                var nodes = new HtmlWeb().Load(url)?
+                    .DocumentNode.SelectSingleNode(("//div[@class='news-header__image']")).OuterHtml;
+                var regex = new Regex(@"(https?:\/\/)?([\w-]{1,32}\.[\w-]{1,32})[^\s@]*jpeg").Match(nodes).Value;
+
+                if (string.IsNullOrEmpty(regex))
+                {
+                    return "/img/Onliner.jpg";
+                }
+
+                return regex;
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
                 return "/img/Onliner.jpg";
             }
-
-            return regex;
 
         }
 
@@ -85,14 +94,15 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
                     .DocumentNode.SelectSingleNode(("//div[@class='news-text']"))?
                     .OuterHtml;
 
-                if (nodes == null)
+                if (string.IsNullOrEmpty(nodes))
                 {
-                    throw new Exception($"News with Url {bodyUrl} not invalid");
+                    Log.Information($"Body Onliner {bodyUrl} is null");
+                    return null;
                 }
 
 
-                var iframeReplace = @"(<iframe.*?>)";
-                nodes = Regex.Replace(nodes, iframeReplace, "");
+                var videoReplace = @"(<iframe.*?>)";
+                nodes = Regex.Replace(nodes, videoReplace, "");
 
 
 
@@ -104,9 +114,10 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
                     "<img loading=\"lazy\" class=\"alignnone",
                 };
 
-                foreach (var old in oldValue)
+                //foreach (var old in oldValue)
+                //{
+                Parallel.ForEach(oldValue, old =>
                 {
-
                     if (nodes.Contains(old))
                     {
 
@@ -118,12 +129,9 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
                         {
                             nodes = nodes.Replace(old, "<img class=\"img-fluid\"");
                         }
-
-
-
-
                     }
-                }
+                });
+                //}
 
                 #endregion
 
@@ -139,18 +147,22 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
                     "<h2 style=\"text-align: center;",
                     "Auto.Onliner",
                     "<div class=\"news-vote\"",
+                    "Знакомы с ситуацией?"
 
 
                 };
 
-
                 foreach (var remove in variantsOfRemoveText)
                 {
+                    //Parallel.ForEach(variantsOfRemoveText, remove =>
+                    //{
+
                     if (nodes.Contains(remove))
                     {
                         var index = nodes.LastIndexOf(remove, StringComparison.Ordinal);
                         nodes = nodes.Remove(index);
                     }
+                    //});
                 }
 
                 #endregion

@@ -98,7 +98,7 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
 
             catch (Exception e)
             {
-                Log.Error($"Error in S13Parser in Body. Exception: {e}.Message: {e.Message}");
+                Log.Error($"Error in S13Parser in Body. Message: {e.Message}");
                 return bodyUrl;
             }
         }

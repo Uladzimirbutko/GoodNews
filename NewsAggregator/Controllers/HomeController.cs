@@ -24,6 +24,8 @@ namespace NewsAggregator.Controllers
        
         public IActionResult Privacy()
         {
+            int x = 0;
+            int y = 2 / x;
             return View();
         }
 

@@ -13,7 +13,7 @@ namespace NewsAggregator.DAL.Repositories.Interfaces
         IQueryable<T> FindBy(Expression<Func<T, bool>> predicate, 
             params Expression<Func<T, object>>[] includes);
 
-        IQueryable<T> GetAllNews();
+        IQueryable<T> GetAll();
         Task Add(T entity);
         Task AddRange(IEnumerable<T> entities);
         

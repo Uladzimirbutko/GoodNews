@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NewsAggregator.Core.DataTransferObjects;
 using NewsAggregator.Core.Services.Interfaces;
@@ -26,6 +27,7 @@ namespace NewsAggregator.Controllers
         }
 
         // GET: News
+        //[Authorize]
         public async Task<IActionResult> Index(Guid id, int page = 1)
         {
             if (id == null)
@@ -96,7 +98,7 @@ namespace NewsAggregator.Controllers
             stopwatch.Start();
             await _newsService.AggregateNews();
             stopwatch.Stop();
-            Log.Information($"Время аггрегации онлайнера {stopwatch.ElapsedMilliseconds}");
+            Log.Information($"Aggregate time all sources {stopwatch.ElapsedMilliseconds}");
             return RedirectToAction(nameof(Index));
         }
 

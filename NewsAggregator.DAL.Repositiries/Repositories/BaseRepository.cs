@@ -42,7 +42,7 @@ namespace NewsAggregator.DAL.Repositories.Implementation.Repositories
             return result;
         }
 
-        public IQueryable<T> GetAllNews()
+        public IQueryable<T> GetAll()
         {
             return Table;
         }

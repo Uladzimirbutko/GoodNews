@@ -62,16 +62,24 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
 
         public string ImageParser(string url)
         {
-            var nodes = new HtmlWeb().Load(url)?
-                .DocumentNode.SelectSingleNode("//section[@class='article__img']").OuterHtml;
-            var patternLinkImg = "(https.*?jpg)";
-            nodes = Regex.Match(nodes, patternLinkImg).Value;
-
-            if (string.IsNullOrEmpty(nodes))
+            try
             {
+                var nodes = new HtmlWeb().Load(url)?
+                    .DocumentNode.SelectSingleNode("//section[@class='article__img']").OuterHtml;
+                var patternLinkImg = "(https.*?jpg)";
+                nodes = Regex.Match(nodes, patternLinkImg).Value;
+
+                if (string.IsNullOrEmpty(nodes))
+                {
+                    return "/img/Wylsacom.jpg";
+                }
+                return nodes;
+            }
+            catch (Exception e)
+            {
+                Log.Error($"Error in Image wylsacomParser{e.Message}");
                 return "/img/Wylsacom.jpg";
             }
-            return nodes;
 
 
 
@@ -81,15 +89,13 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
         {
             try
             {
-
-
                 var nodes = new HtmlWeb().Load(bodyUrl)?
                     .DocumentNode.SelectSingleNode("//div[@class='content__inner']").OuterHtml;
 
-                if (nodes == null)
+                if (string.IsNullOrEmpty(nodes))
                 {
-                    Log.Information($"News Url {bodyUrl} is not invalid");
-                    return bodyUrl;
+                    Log.Information($"News Url {bodyUrl} is not invalid. Return null");
+                    return null;
                 }
 
                 nodes = nodes.Replace("<div class=\"content__inner\">", "<div class=\"align-content-center\">");
@@ -98,10 +104,7 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
                 var embededPostRegex = "(<a class=\"embeded-post\"((?:.|\n)*)<\\/a>)";
 
                 nodes = Regex.Replace(nodes, embededPostRegex, "");
-
-
                 return nodes;
-
             }
 
             catch (Exception e)

@@ -87,4 +87,56 @@ blockquote {
     font-style: italic;
     background-color: rgba(219, 217, 217, 0.73);
 }
+.note {
+    text-align: center;
+    height: 80px;
+    background: -webkit-linear-gradient(left, #0072ff, #8811c5);
+    color: #fff;
+    font-weight: bold;
+    line-height: 80px;
+}
+
+.form-content {
+    padding: 5%;
+    border: 1px solid #ced4da;
+    margin-bottom: 2%;
+}
+
+.form-control {
+    border-radius: 1.5rem;
+}
+
+.btnSubmit {
+    border: none;
+    border-radius: 1.5rem;
+    padding: 1%;
+    width: 20%;
+    cursor: pointer;
+    background: #0062cc;
+    color: #fff;
+}
+
+.divider-text {
+    position: relative;
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+.divider-text span {
+    padding: 7px;
+    font-size: 12px;
+    position: relative;
+    z-index: 2;
+}
+
+.divider-text:after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    border-bottom: 1px solid #ddd;
+    top: 55%;
+    left: 0;
+    z-index: 1;
+}
 

@@ -17,9 +17,11 @@ using NewsAggregator.DAL.Repositories.Implementation.Repositories;
 using NewsAggregator.DAL.Repositories.Interfaces;
 using NewsAggregator.Filters;
 using NewsAggregator.Services.Implementation;
-using NewsAggregator.Services.Implementation.Mapping;
+using NewsAggregator.Mapping;
 using NewsAggregator.Services.Implementation.NewsParsers;
 using NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers;
+using NewsAggregator.Services.Implementation.Services;
+using AutoMapping = NewsAggregator.Mapping.AutoMapping;
 
 namespace NewsAggregator
 {
@@ -51,14 +53,15 @@ namespace NewsAggregator
             #region Services
             services.AddScoped<INewsService, NewsService>();
             services.AddScoped<IRssSourceService, RssSourceService>();
-            //services.AddScoped<IUserService, UserService>();
-            //services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRoleService, RoleService>();
 
             #endregion
 
             #region Parsers
             services.AddTransient<IWebPageParser, OnlinerParser>();
-
+            services.AddTransient<IWebPageParser, S13Parser>();
+            services.AddTransient<IWebPageParser, WylsacomParser>();
 
             #endregion
 
@@ -76,17 +79,18 @@ namespace NewsAggregator
             services.AddScoped<CustomExceptionFilterAttribute>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options => 
+                .AddCookie(options =>
                     options.LoginPath = new PathString("/Account/Login"));
 
             services.AddRazorPages().AddRazorRuntimeCompilation();
 
             services.AddSingleton(mapper);
 
-            services.AddControllersWithViews().AddMvcOptions(opt =>
-            {
-                opt.Filters.Add(typeof(CustomExceptionFilterAttribute));
-            });
+            services.AddControllersWithViews();
+            //    .AddMvcOptions(opt =>
+            //{
+            //    opt.Filters.Add(typeof(CustomExceptionFilterAttribute));
+            //});
         }
 
         // This method gets called by the runtime.

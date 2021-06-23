@@ -33,7 +33,7 @@ namespace NewsAggregator.DAL.Repositories.Implementation
 
         public IBaseRepository<News> News => _newsRepository;
         public IBaseRepository<RssSource> Rss => _rssRepository;
-        public IBaseRepository<Role> Role => _roleRepository;
+        public IBaseRepository<Role> Roles => _roleRepository;
         public IBaseRepository<User> Users => _userRepository;
         public IBaseRepository<Comment> Comments => _commentRepository;
 
@@ -46,16 +46,5 @@ namespace NewsAggregator.DAL.Repositories.Implementation
             _db?.Dispose();
             GC.SuppressFinalize(this);
         }
-    }
-
-    public interface IUnitOfWork: IDisposable
-    {
-        IBaseRepository<News> News { get; }
-        IBaseRepository<RssSource> Rss { get; }
-        IBaseRepository<Role> Role { get; }
-        IBaseRepository<User> Users { get; }
-        IBaseRepository<Comment> Comments { get; }
-         
-        Task<int> SaveChangesAsync();
     }
 }

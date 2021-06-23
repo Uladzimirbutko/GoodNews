@@ -19,7 +19,7 @@ namespace NewsAggregator.Filters
                 ViewName = "CustomError"
             };
 
-            Log.Error($"Error {context.Exception.Message} || {context.ActionDescriptor.DisplayName} || {context.Exception.StackTrace} || {context.HttpContext.Request}");
+            Log.Error($"Error {message} || {action} || {stackTrace} || {httpRequest}");
 
             context.ExceptionHandled = true;
         }
