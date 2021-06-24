@@ -7,10 +7,13 @@
 
 <h1>News</h1>
 
-<p>
-    <a asp-controller="News" asp-action="AggregateNews">Добавить новые новости</a>
-</p>
+@if (Model.IsAdmin)
+{
+    <p>
+        <a asp-controller="News" asp-action="AggregateNews">Добавить новые новости</a>
+    </p>
 
+}
 <div class="row">
     @foreach (var item in Model.News)
     {

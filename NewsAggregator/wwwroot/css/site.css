@@ -87,7 +87,7 @@ blockquote {
     font-style: italic;
     background-color: rgba(219, 217, 217, 0.73);
 }
-.note {
+/*.note {
     text-align: center;
     height: 80px;
     background: -webkit-linear-gradient(left, #0072ff, #8811c5);
@@ -138,5 +138,5 @@ blockquote {
     top: 55%;
     left: 0;
     z-index: 1;
-}
+}*/
 

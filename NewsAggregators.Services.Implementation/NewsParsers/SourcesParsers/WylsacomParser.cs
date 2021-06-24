@@ -65,23 +65,28 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
             try
             {
                 var nodes = new HtmlWeb().Load(url)?
-                    .DocumentNode.SelectSingleNode("//section[@class='article__img']").OuterHtml;
-                var patternLinkImg = "(https.*?jpg)";
-                nodes = Regex.Match(nodes, patternLinkImg).Value;
-
-                if (string.IsNullOrEmpty(nodes))
+                    .DocumentNode.SelectSingleNode("//section[@class='article__img']");
+                if (nodes == null)
                 {
                     return "/img/Wylsacom.jpg";
                 }
-                return nodes;
+
+                var outerHtml = nodes.OuterHtml;
+                var patternLinkImg = "(https.*?jpg)";
+
+                outerHtml = Regex.Match(outerHtml, patternLinkImg).Value;
+
+                if (string.IsNullOrEmpty(outerHtml))
+                {
+                    return "/img/Wylsacom.jpg";
+                }
+                return outerHtml;
             }
             catch (Exception e)
             {
                 Log.Error($"Error in Image wylsacomParser{e.Message}");
                 return "/img/Wylsacom.jpg";
             }
-
-
 
         }
 
@@ -102,8 +107,31 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
                 nodes = nodes.Replace("padding-bottom:75%", "padding-bottom:10px");
 
                 var embededPostRegex = "(<a class=\"embeded-post\"((?:.|\n)*)<\\/a>)";
-
                 nodes = Regex.Replace(nodes, embededPostRegex, "");
+
+                var oldImgValue = new List<string>()
+                {
+                    "<img loading=\"lazy\" class=\"alignnone size-full",
+                };
+
+                //foreach (var old in oldValue)
+                //{
+                Parallel.ForEach(oldImgValue, old =>
+                {
+                    if (nodes.Contains(old))
+                    {
+
+                        if (nodes.Contains("<img loading=\"lazy\" class=\"alignnone size-full"))
+                        {
+                            nodes = nodes.Replace(old, "<img class=\"img-fluid\"");
+                        }
+                        //else if (nodes.Contains("<img loading=\"lazy\" class=\"alignnone"))
+                        //{
+                        //    nodes = nodes.Replace(old, "<img class=\"img-fluid\"");
+                        //}
+                    }
+                });
+
                 return nodes;
             }
 

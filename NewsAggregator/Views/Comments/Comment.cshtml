@@ -1,0 +1,9 @@
+﻿@model NewsAggregator.Core.DataTransferObjects.CommentDto
+
+<div class="card comment-card col-sm-12">
+    <div class="card-body">
+        <h6>@Model.UserEmail</h6>
+        <p class="card-text">@Model.Text</p>
+        <p>@Model.PublicationDate.ToString("g")</p>
+    </div>
+</div>

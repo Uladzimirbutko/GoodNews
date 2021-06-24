@@ -23,26 +23,18 @@ namespace NewsAggregator.Services.Implementation.Services
         }
         public async Task<IEnumerable<RoleDto>> GetRoles()
         {
-           return (await _unitOfWork.Roles.GetAll().ToListAsync())
-                    .Select(role => _mapper.Map<RoleDto>(role));
+           return await _unitOfWork.Roles.GetAll()
+                    .Select(role => _mapper.Map<RoleDto>(role))
+                    .ToListAsync();
         }
 
         public async Task<RoleDto> GetRoleByUserId(Guid userId)
         {
+            
             return _mapper.Map<RoleDto>(await _unitOfWork.Roles
                 .GetById((await _unitOfWork.Users
                     .GetById(userId)).RoleId));
-            //var role = (await _unitOfWork.Users
-            //    .FindBy(user => user.Id.Equals(userId),
-            //        includes: user => user.Role.Name)
-            //    .FirstOrDefaultAsync()).Role;
-
-            //var roleDto = new RoleDto()
-            //{
-            //    Id = role.Id,
-            //    Name = role.Name
-            //};
-            //return roleDto;
+            
         }
 
         public async Task ReplaceUserRole(Guid userId, RoleDto role)

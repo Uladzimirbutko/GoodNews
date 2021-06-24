@@ -16,6 +16,8 @@ namespace NewsAggregator.Mapping
 
             CreateMap<Role, RoleDto>().ReverseMap();
 
+            CreateMap<Comment, CommentDto>().ReverseMap();
+
         }
 
     }

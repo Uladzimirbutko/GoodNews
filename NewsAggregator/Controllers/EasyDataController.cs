@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace NewsAggregator.Controllers
 {
     [Route("easydata")]
+    [Authorize]
     public class EasyDataController : Controller
     {
         private readonly ILogger<EasyDataController> _logger;

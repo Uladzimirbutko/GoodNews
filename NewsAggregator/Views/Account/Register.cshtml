@@ -5,7 +5,7 @@
 
 <h2>Регистрация</h2>
 <form asp-action="Register" asp-controller="Account" asp-antiforgery="true" method="post">
-    <div class="is-valid" asp-validation-summary="ModelOnly"></div>
+    <div class="validation" asp-validation-summary="ModelOnly"></div>
     <div>
         <div class="form-content">
             <label asp-for="Email">Email</label>
@@ -13,14 +13,20 @@
             <span asp-validation-for="Email"></span>
         </div>
         <div class="form-content">
-            <label asp-for="Password">Password</label>
+            <label asp-for="Password">Введите пароль</label>
             <input asp-for="Password" type="password" />
             <span asp-validation-for="Password"></span>
         </div>
         <div class="form-content">
-            <label asp-for="PasswordConfirmation">Confirm Password</label>
+            <label asp-for="PasswordConfirmation">Повторите пароль</label>
             <input asp-for="PasswordConfirmation" type="password" />
             <span asp-validation-for="PasswordConfirmation"></span>
+        </div>
+        <div class="form-content">
+            <label asp-for="Age">Введите свой возраст</label>
+            <input asp-for="Age" type="text" />
+            <sub>доступ к ресурсу 18+</sub>
+            <span asp-validation-for="Age"></span>
         </div>
         <div>
             <input type="submit" value="Register" />

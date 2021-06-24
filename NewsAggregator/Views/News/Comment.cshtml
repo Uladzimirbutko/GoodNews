@@ -1,0 +1,14 @@
+﻿@model NewsAggregator.DAL.Core.Entities.Comment
+
+
+<div>
+    <h4>Comments</h4>
+    <hr />
+
+    <div class="comment">
+
+        <div class="user">@Model.User.Email</div>
+        <div class="comment_text">@Model.Text</div>
+        <div class="comment_date">@Model.PublicationDate</div>
+    </div>
+</div>

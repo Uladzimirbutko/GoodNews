@@ -8,10 +8,13 @@ namespace NewsAggregator.DAL.Core.Entities
         public string Text { get; set; }
         public DateTime PublicationDate { get; set; }
 
+
+
         public Guid NewsId { get; set; } //FK
         public News News { get; set; }
 
         public Guid UserId { get; set; } //FK
+        public string UserEmail { get; set; }
         public User User { get; set; }
 
 

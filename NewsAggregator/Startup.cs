@@ -9,7 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NewsAggregator.DAL.Core;
 using EasyData.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using NewsAggregator.AuthorizationPolicies;
 using NewsAggregator.Core.Services.Interfaces;
 using NewsAggregator.DAL.Core.Entities;
 using NewsAggregator.DAL.Repositories.Implementation;
@@ -55,6 +57,7 @@ namespace NewsAggregator
             services.AddScoped<IRssSourceService, RssSourceService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<ICommentService, CommentService>();
 
             #endregion
 
@@ -62,35 +65,48 @@ namespace NewsAggregator
             services.AddTransient<IWebPageParser, OnlinerParser>();
             services.AddTransient<IWebPageParser, S13Parser>();
             services.AddTransient<IWebPageParser, WylsacomParser>();
-
             #endregion
 
             #region AutoMapper
-
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             var mapperConfig = new MapperConfiguration(mc =>
             {
                 mc.AddProfile(new AutoMapping());
             });
             var mapper = mapperConfig.CreateMapper();
-
             #endregion
 
+            #region Filters
             services.AddScoped<CustomExceptionFilterAttribute>();
+            #endregion
+
+            #region Authorization and Authentication
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                    options.LoginPath = new PathString("/Account/Login"));
+                .AddCookie(opt =>
+                {
+                    opt.LoginPath = new PathString("/Account/Login");
+                    opt.AccessDeniedPath = new PathString("/Account/NoAccessRights");
+                });
+
+
+                
+
+            services.AddAuthorization(opt =>
+                opt.AddPolicy("18+Content", policy =>
+                    policy.Requirements.Add(new MinAgeRequirement(18))));
+            services.AddSingleton<IAuthorizationHandler, MinAgeHandler>();
+            #endregion
 
             services.AddRazorPages().AddRazorRuntimeCompilation();
 
             services.AddSingleton(mapper);
 
-            services.AddControllersWithViews();
-            //    .AddMvcOptions(opt =>
-            //{
-            //    opt.Filters.Add(typeof(CustomExceptionFilterAttribute));
-            //});
+            services.AddControllersWithViews()
+                .AddMvcOptions(opt =>
+            {
+                opt.Filters.Add(typeof(CustomExceptionFilterAttribute));
+            });
         }
 
         // This method gets called by the runtime.

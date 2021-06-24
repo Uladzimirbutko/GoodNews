@@ -7,5 +7,6 @@ namespace NewsAggregator.Models.ViewModels.News
     {
         public IEnumerable<NewsDto> News { get; set; }
         public PageInfo PageInfo { get; set; }
+        public bool IsAdmin { get; set; }
     }
 }

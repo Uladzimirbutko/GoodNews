@@ -8,9 +8,10 @@ namespace NewsAggregator.Core.Services.Interfaces
     public interface IUserService
     {
         Task<IEnumerable<UserDto>> GetAllUsers();
-        Task<IEnumerable<UserDto>> GetUserById(Guid id);
-        Task<IEnumerable<UserDto>> GetUsersByCommentId(Guid commentId);
+        Task<UserDto> GetUserById(Guid id);
         Task<UserDto> GetUserByEmail(string email);
+        Task<bool> CheckAuthIsValid(UserDto model);
+        Task<string> GetUserEmailByRefreshToken(string refreshToken);
         string GetPasswordHash(string password);
         Task<bool> RegisterUser(UserDto model);
     }

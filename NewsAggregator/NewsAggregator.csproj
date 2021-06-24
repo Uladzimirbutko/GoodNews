@@ -84,6 +84,7 @@
 
     <ItemGroup>
       <Folder Include="Filters\" />
+      <Folder Include="AuthorizationPolicies\" />
       <Folder Include="wwwroot\lib\bootstrap\dist\css\" />
       <Folder Include="wwwroot\lib\bootstrap\dist\js\" />
       <Folder Include="wwwroot\scss\" />

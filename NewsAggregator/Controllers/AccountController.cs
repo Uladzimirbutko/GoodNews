@@ -38,7 +38,7 @@ namespace NewsAggregator.Controllers
             if (ModelState.IsValid)
             {
                 var passwordHash = _userService.GetPasswordHash(model.Password);
-
+                
                 var result = await _userService.RegisterUser(new UserDto()
                 {
                     Id = Guid.NewGuid(),
@@ -53,7 +53,7 @@ namespace NewsAggregator.Controllers
                     return RedirectToAction("Index", "Home");
                 }
 
-                return BadRequest(model);
+                return RedirectToAction("Register");
             }
 
             return View(model);
@@ -96,9 +96,10 @@ namespace NewsAggregator.Controllers
             const string authType = "ApplicationCookie";
             var claims = new List<Claim>
             {
-                new (ClaimsIdentity.DefaultNameClaimType, user.Email),
-                new (ClaimsIdentity.DefaultRoleClaimType, 
-                    (await _roleService.GetRoleByUserId(user.Id)).Name)
+                new Claim (ClaimsIdentity.DefaultNameClaimType, user.Email),
+                new Claim (ClaimsIdentity.DefaultRoleClaimType, (await _roleService.GetRoleByUserId(user.Id)).Name),
+                new Claim("age", user.Age.ToString())
+
             };
             var identity = new ClaimsIdentity(claims, authType, ClaimsIdentity.DefaultNameClaimType,
                 ClaimsIdentity.DefaultRoleClaimType);
@@ -112,6 +113,11 @@ namespace NewsAggregator.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login", "Account");
 
+        }
+        public IActionResult NoAccessRights(LoginViewModel model)
+        {
+            
+            return View(model);
         }
     }
 }

@@ -7,6 +7,7 @@
 <form asp-action="Login" asp-controller="Account" asp-antiforgery="true" method="post">
     <div class="is-valid" asp-validation-summary="ModelOnly"></div>
     <div>
+        <h4 class="text-danger align-content-center">У вас нет прав для доступа к данной части ресурса. Пожалуйста войдите под соответствующим аккаунтом.</h4>
         <input type="hidden" asp-for="ReturnUrl"/>
         <div class="form-content">
             <label asp-for="Email">Email</label>

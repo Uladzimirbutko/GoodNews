@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NewsAggregator.Core.Services.Interfaces;
 
 namespace NewsAggregator.Controllers
 {
+
+    [Authorize]
     public class RssSourcesController : Controller
     {
         private readonly IRssSourceService _rssSource;

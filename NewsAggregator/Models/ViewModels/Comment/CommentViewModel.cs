@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace NewsAggregator.Models.ViewModels.Comment
 
@@ -8,6 +9,8 @@ namespace NewsAggregator.Models.ViewModels.Comment
         public Guid Id { get; set; }
         public string Text { get; set; }
         public DateTime PublicationDate { get; set; }
+
+        public string UserEmail { get; set; }
 
     }
 }

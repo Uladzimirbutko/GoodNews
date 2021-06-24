@@ -13,27 +13,26 @@ using Serilog;
 
 namespace NewsAggregator.Controllers
 {
+    [Authorize ("18+Content")]
     public class NewsController : Controller
     {
         private readonly INewsService _newsService;
+        private readonly ICommentService _commentService;
+        private readonly IUserService _userService;
         private readonly IRssSourceService _rssSourceService;
-        private readonly IWebPageParser _onlinerParser;
 
-        public NewsController(INewsService newsService, IRssSourceService rssSourceService, IWebPageParser onlinerParser)
+
+        public NewsController(INewsService newsService, ICommentService commentService, IUserService userService, IRssSourceService rssSourceService)
         {
             _newsService = newsService;
+            _commentService = commentService;
+            _userService = userService;
             _rssSourceService = rssSourceService;
-            _onlinerParser = onlinerParser;
         }
-
+        [Authorize("18+Content")]
         // GET: News
-        //[Authorize]
         public async Task<IActionResult> Index(Guid id, int page = 1)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
             var news = (await _newsService.GetAllNews()).OrderByDescending(dto => dto.PublicationDate).ToList();
 
             var pageSize = 12;
@@ -49,42 +48,35 @@ namespace NewsAggregator.Controllers
 
             return View(new NewsListWithPaginationInfo()
             {
+                IsAdmin = HttpContext.User.IsInRole("Admin"),
                 News = newsPerPages,
                 PageInfo = pageInfo
             });
         }
-
+        [Authorize("18+Content")]
         // GET: News/Details/5
         public async Task<IActionResult> Details(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
             var news = await _newsService.GetNewsById(id);
+            var comment = await _commentService.GetCommentsByNewsId(news.Id);
 
-
-            if (news == null)
-            {
-                return NotFound();
-            }
-
-            var viewModel = new NewsDto()
+            var viewModel = new NewsWithCommentsViewModel()
             {
                 Id = news.Id,
                 Article = news.Article,
                 Body = news.Body,
                 Url = news.Url,
                 Rating = news.Rating,
-                RssSourceId = news.RssSourceId,
-                PublicationDate = news.PublicationDate, // Here will Null reference exception -> RssSource is null
-                Summary = news.Summary,
+                PublicationDate = news.PublicationDate,
                 Category = news.Category,
-                TitleImage = news.TitleImage
+                TitleImage = news.TitleImage,
+                Comments = comment,
+                
+
             };
             return View(viewModel);
         }
-
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AggregateNews()
         {
             return View();
@@ -105,12 +97,8 @@ namespace NewsAggregator.Controllers
         // GET: News/Delete/5
         public async Task<IActionResult> Delete(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var news = await _newsService.GetNewsById(id);
+
             if (news == null)
             {
                 return NotFound();

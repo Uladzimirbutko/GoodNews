@@ -1,4 +1,4 @@
-﻿@model NewsAggregator.Core.DataTransferObjects.NewsDto
+﻿@model NewsAggregator.Models.ViewModels.News.NewsWithCommentsViewModel
 
 @{
     ViewData["Title"] = "News Details";
@@ -8,15 +8,33 @@
 
 
 <img src="@Model.TitleImage" class="img-fluid" alt="Img">
+<div>@Model.Category</div>
 
 <div class="align-content-center">
     @Html.Raw(Model.Body)
 </div>
-<div>
-    <a class="btn btn-light" href="@Model.Url">Читать в источнике</a>
+@Model.PublicationDate
+
+<div class="btn-group-vertical col-sm-12">
+    <button class="btn btn-light col-sm-12">
+        <a class="text-info" href="@Model.Url">Читать в источнике</a>
+    </button>
+    <button class="btn btn-light col-sm-12">
+        <a class="text-info" asp-action="Index">Назад</a>
+    </button>
+    <button id="comments-display-switcher" class="btn btn-light col-sm-12" onclick="toggleComments('@Model.Id')">Показать комментарии</button>
+    <div class="container">
+        <div id="comments-container" class="row">
+            @*@foreach (var comment in Model.Comments)
+                {
+                    @await Html.PartialAsync("CommentPartial", comment)
+                }*@
+        </div>
+    </div>
+
 </div>
-<div>
-    <a class="btn btn-info" asp-action="Index">
-        Назад
-    </a>
-</div>
+@section Scripts
+{
+    <script src="~/js/comments.js"></script>
+    @*<script src="~/js/comments-jquery.js"></script>*@
+}

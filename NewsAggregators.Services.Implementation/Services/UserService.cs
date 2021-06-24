@@ -19,6 +19,7 @@ namespace NewsAggregator.Services.Implementation.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        
 
 
         public UserService(IUnitOfWork unitOfWork, IMapper mapper)
@@ -34,32 +35,35 @@ namespace NewsAggregator.Services.Implementation.Services
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<UserDto>> GetUserById(Guid id)
+        public async Task<UserDto> GetUserById(Guid id)
         {
-            return await _unitOfWork.Users
-                .FindBy(n => n.Id.Equals(id))
-                .Select(n => _mapper.Map<UserDto>(n))
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<UserDto>> GetUsersByCommentId(Guid commentId)
-        {
-            //check this Metod.
-            var userId = _unitOfWork.Comments
-                .FindBy(n => n.Id != null)
-                .Select(comment => comment.UserId);
-            
-            return await _unitOfWork.Users
-                .FindBy(user => user.Id.Equals(userId))
-                .Select(s => _mapper.Map<UserDto>(s)).ToListAsync();
+            return _mapper.Map<UserDto>(await _unitOfWork.Users.GetById(id));
         }
 
         
         public async Task<UserDto> GetUserByEmail(string email)
         {
-            return _mapper.Map<UserDto>(await _unitOfWork.Users
-                .FindBy(user => user.Email.Equals(email))
-                .FirstOrDefaultAsync());
+            //return _mapper.Map<UserDto>(await _unitOfWork.Users.FindBy(user1 => user1.Email.Equals(email)).FirstOrDefaultAsync());
+            try
+            {
+                var user = await _unitOfWork.Users.GetAll().Where(user => user.Email.Equals(email)).FirstOrDefaultAsync();
+                return _mapper.Map<UserDto>(user);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                throw;
+            }
+        }
+
+        public async Task<bool> CheckAuthIsValid(UserDto model)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<string> GetUserEmailByRefreshToken(string refreshToken)
+        {
+            throw new NotImplementedException();
         }
 
         public string GetPasswordHash(string password)
@@ -74,21 +78,28 @@ namespace NewsAggregator.Services.Implementation.Services
         {
             try
             {
-                var getRoleId =
-                    (await _unitOfWork.Roles.FindBy(role => role.Name.Equals("User")).FirstOrDefaultAsync()).Id;
-
-                await _unitOfWork.Users.Add( new User()
+                
+                if (await GetUserByEmail(userDto.Email) == null)
                 {
-                    Id = userDto.Id,
-                    Email = userDto.Email,
-                    FullName = userDto.FullName,
-                    PasswordHash = userDto.PasswordHash,
-                    Age = userDto.Age,
-                    RoleId = getRoleId
-                });
+                    var getRoleId =
+                        (await _unitOfWork.Roles.FindBy(role => role.Name.Equals("User")).FirstOrDefaultAsync()).Id;
 
-                await _unitOfWork.SaveChangesAsync();
-                return true;
+                    await _unitOfWork.Users.Add( new User()
+                    {
+                        Id = userDto.Id,
+                        Email = userDto.Email,
+                        FullName = userDto.FullName,
+                        PasswordHash = userDto.PasswordHash,
+                        Age = userDto.Age,
+                        RoleId = getRoleId
+                    });
+
+                    await _unitOfWork.SaveChangesAsync();
+                    return true;
+                }
+
+                return false;
+
             }
             catch (Exception e)
             {
