@@ -32,8 +32,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewsAggregator.DAL.Reposito
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewsAggregator.DAL.Repositories.Interfaces", "NewsAggregator.DAL.Interfaces\NewsAggregator.DAL.Repositories.Interfaces.csproj", "{1E8EACF0-D37B-456E-9DBC-1D19FB488F73}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewsAggregator.WebApi", "NewsAggregator.WebApi1\NewsAggregator.WebApi.csproj", "{F010E789-3EF8-4DA7-87AF-0FF940BCEC3C}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewsAggregator.DAL.CQRS", "NewsAggregator.DAL.CQRS\NewsAggregator.DAL.CQRS.csproj", "{C029B5B7-F734-4640-BE1B-20EDA8358B07}"
 EndProject
 Global
@@ -70,10 +68,6 @@ Global
 		{1E8EACF0-D37B-456E-9DBC-1D19FB488F73}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E8EACF0-D37B-456E-9DBC-1D19FB488F73}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E8EACF0-D37B-456E-9DBC-1D19FB488F73}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F010E789-3EF8-4DA7-87AF-0FF940BCEC3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F010E789-3EF8-4DA7-87AF-0FF940BCEC3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F010E789-3EF8-4DA7-87AF-0FF940BCEC3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F010E789-3EF8-4DA7-87AF-0FF940BCEC3C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C029B5B7-F734-4640-BE1B-20EDA8358B07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C029B5B7-F734-4640-BE1B-20EDA8358B07}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C029B5B7-F734-4640-BE1B-20EDA8358B07}.Release|Any CPU.ActiveCfg = Release|Any CPU
