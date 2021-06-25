@@ -1,9 +1,8 @@
 ﻿using System;
-using NewsAggregator.DAL.Core.Entities;
 
 namespace NewsAggregator.Core.DataTransferObjects
 {
-    public class CommentDto
+    public class CommentDto : IDtoModel
     {
         public Guid Id { get; set; }
         public string Text { get; set; }

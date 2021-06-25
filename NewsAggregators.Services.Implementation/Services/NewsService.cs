@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using NewsAggregator.Core.DataTransferObjects;
-using NewsAggregator.Core.Services.Interfaces;
+using NewsAggregator.Core.Services.Interfaces.ServicesInterfaces;
 using NewsAggregator.DAL.Core.Entities;
 using NewsAggregator.DAL.Repositories.Implementation;
 using NewsAggregator.Services.Implementation.NewsParsers;
@@ -28,30 +28,34 @@ namespace NewsAggregator.Services.Implementation.Services
 
         public async Task<IEnumerable<NewsDto>> AggregateNews()
         {
-            var sources = await _rssSourceService.GetAllRssSources();
-
-            var newsUrls = await _unitOfWork.News.GetAll()
-                .Select(n => n.Url)
-                .ToListAsync();
-
-            var newsInfos = new List<NewsDto>();
-
-            var parser = new Parser(_mapper);
-
             try
             {
+                var sources = await _rssSourceService.GetAllRssSources();
+
+                var newsUrls = await _unitOfWork.News.GetAll()
+                    .Select(n => n.Url)
+                    .ToListAsync();
+
+                var newsInfos = new List<NewsDto>();
+
+                var parser = new Parser(_mapper);
+
+
                 newsInfos.AddRange(parser.Parse(sources, newsUrls));
 
                 await AddRange(newsInfos);
 
-                Log.Information($"Aggregation was succeeded");
+                Log.Information($"Aggregation was succeeded"); 
+                
+                return newsInfos;
             }
             catch
             {
                 Log.Error($"Aggregation was failed");
+                return null;
             }
 
-            return newsInfos;
+           
         }
 
         public async Task<IEnumerable<NewsDto>> GetAllNews()
@@ -61,24 +65,18 @@ namespace NewsAggregator.Services.Implementation.Services
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<NewsDto>> GetNewsBySourceId(Guid? id)
+        public async Task<IEnumerable<NewsDto>> GetNewsBySourceId(Guid id)
         {
             var news = new List<News>();
             try
             {
-                news = id.HasValue
-                    ? await _unitOfWork.News
-                        .FindBy(n
-                            => n.RssSourceId.Equals(id.GetValueOrDefault()))
-                        .ToListAsync()
-                    : await _unitOfWork.News
-                        .FindBy(n => n.Id != null)
-                        .ToListAsync();
+                news = await _unitOfWork.News
+                         .FindBy(n => n.RssSourceId.Equals(id))
+                         .ToListAsync();
             }
             catch (Exception e)
             {
                 Log.Error($"Error in GetNewsBySourceId. {e.Message}");
-
             }
 
             return news
@@ -91,38 +89,28 @@ namespace NewsAggregator.Services.Implementation.Services
             return _mapper.Map<NewsDto>(await _unitOfWork.News.GetById(id));
         }
 
-        public async Task AddNews(NewsDto news)
-        {
-            try
-            {
-                await _unitOfWork.News.Add(_mapper.Map<News>(news));
-                await _unitOfWork.SaveChangesAsync();
-            }
-            catch (Exception e)
-            {
-                Log.Error($"Error in Add one News. {e.Message}");
-            }
-        }
-
-        public async Task AddRange(IEnumerable<NewsDto> news)
+       
+        public async Task<int> AddRange(IEnumerable<NewsDto> news)
         {
             try
             {
                 var addRange = news.Select(ent => _mapper.Map<News>(ent));
+                Log.Information($"News added {addRange.Count()}");
                 await _unitOfWork.News.AddRange(addRange);
-                await _unitOfWork.SaveChangesAsync();
+                return await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception e)
             {
                 Log.Error($"Error in AddRange. {e.Message}");
+                return 0;
             }
         }
 
-        public async Task DeleteNews(NewsDto news)
+        public async Task DeleteNews(Guid id)
         {
             try
             {
-                var oldNews = await _unitOfWork.News.GetById(news.Id);
+                var oldNews = await _unitOfWork.News.GetById(id);
                 await _unitOfWork.News.Remove(oldNews);
                 await _unitOfWork.SaveChangesAsync();
             }

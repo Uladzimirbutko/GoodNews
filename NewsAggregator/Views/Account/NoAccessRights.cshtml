@@ -5,22 +5,24 @@
 
 <h2>Вход</h2>
 <form asp-action="Login" asp-controller="Account" asp-antiforgery="true" method="post">
-    <div class="is-valid" asp-validation-summary="ModelOnly"></div>
+    <div class="validation" asp-validation-summary="ModelOnly"></div>
     <div>
-        <h4 class="text-danger align-content-center">У вас нет прав для доступа к данной части ресурса. Пожалуйста войдите под соответствующим аккаунтом.</h4>
-        <input type="hidden" asp-for="ReturnUrl"/>
+        <h5 class="text-danger text-center">У вас нет прав для доступа к данной части ресурса. </h5>
+        <h6 class="text-dark text-center">Пожалуйста войдите под соответствующим аккаунтом. </h6>
+        <img class="rounded mx-auto d-block" src="~/img/gendalf.gif" alt="">
+        <input type="hidden" asp-for="ReturnUrl" />
         <div class="form-content">
             <label asp-for="Email">Email</label>
-            <input asp-for="Email" type="text"/>
+            <input asp-for="Email" type="text" />
             <span asp-validation-for="Email"></span>
         </div>
         <div class="form-content">
             <label asp-for="Password">Password</label>
-            <input asp-for="Password" type="password"/>
+            <input asp-for="Password" type="password" />
             <span asp-validation-for="Password"></span>
         </div>
         <div>
-            <input type="submit" value="Login"/>
+            <input type="submit" value="Login" />
         </div>
 
     </div>

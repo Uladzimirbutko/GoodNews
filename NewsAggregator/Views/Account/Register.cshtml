@@ -9,23 +9,28 @@
     <div>
         <div class="form-content">
             <label asp-for="Email">Email</label>
-            <input asp-for="Email" type="text" />
+            <input asp-for="Email" type="text" placeholder="name@example.com" />
             <span asp-validation-for="Email"></span>
         </div>
         <div class="form-content">
             <label asp-for="Password">Введите пароль</label>
-            <input asp-for="Password" type="password" />
+            <input asp-for="Password" type="password" placeholder="password***" />
             <span asp-validation-for="Password"></span>
         </div>
         <div class="form-content">
             <label asp-for="PasswordConfirmation">Повторите пароль</label>
-            <input asp-for="PasswordConfirmation" type="password" />
+            <input asp-for="PasswordConfirmation" type="password" placeholder="password***" />
             <span asp-validation-for="PasswordConfirmation"></span>
         </div>
         <div class="form-content">
             <label asp-for="Age">Введите свой возраст</label>
-            <input asp-for="Age" type="text" />
+            <input asp-for="Age" type="number" placeholder="от 18 до 99" />
             <sub>доступ к ресурсу 18+</sub>
+            <span asp-validation-for="Age"></span>
+        </div>
+        <div class="form-content">
+            <label asp-for="FullName">Введите ваше полное имя</label>
+            <input asp-for="FullName" type="text" placeholder="Гэндальф Серый"/>
             <span asp-validation-for="Age"></span>
         </div>
         <div>

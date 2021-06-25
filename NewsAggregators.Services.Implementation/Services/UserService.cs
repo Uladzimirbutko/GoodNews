@@ -10,7 +10,6 @@ using NewsAggregator.Core.DataTransferObjects;
 using NewsAggregator.Core.Services.Interfaces;
 using NewsAggregator.DAL.Core.Entities;
 using NewsAggregator.DAL.Repositories.Implementation;
-using NewsAggregator.DAL.Repositories.Interfaces;
 using Serilog;
 
 namespace NewsAggregator.Services.Implementation.Services

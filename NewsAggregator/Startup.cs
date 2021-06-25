@@ -13,13 +13,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using NewsAggregator.AuthorizationPolicies;
 using NewsAggregator.Core.Services.Interfaces;
+using NewsAggregator.Core.Services.Interfaces.ServicesInterfaces;
 using NewsAggregator.DAL.Core.Entities;
 using NewsAggregator.DAL.Repositories.Implementation;
 using NewsAggregator.DAL.Repositories.Implementation.Repositories;
 using NewsAggregator.DAL.Repositories.Interfaces;
 using NewsAggregator.Filters;
-using NewsAggregator.Services.Implementation;
-using NewsAggregator.Mapping;
 using NewsAggregator.Services.Implementation.NewsParsers;
 using NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers;
 using NewsAggregator.Services.Implementation.Services;
@@ -74,6 +73,7 @@ namespace NewsAggregator
                 mc.AddProfile(new AutoMapping());
             });
             var mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
             #endregion
 
             #region Filters
@@ -89,9 +89,6 @@ namespace NewsAggregator
                     opt.AccessDeniedPath = new PathString("/Account/NoAccessRights");
                 });
 
-
-                
-
             services.AddAuthorization(opt =>
                 opt.AddPolicy("18+Content", policy =>
                     policy.Requirements.Add(new MinAgeRequirement(18))));
@@ -99,8 +96,6 @@ namespace NewsAggregator
             #endregion
 
             services.AddRazorPages().AddRazorRuntimeCompilation();
-
-            services.AddSingleton(mapper);
 
             services.AddControllersWithViews()
                 .AddMvcOptions(opt =>

@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NewsAggregator.Core.DataTransferObjects;
 using NewsAggregator.Core.Services.Interfaces;
+using NewsAggregator.Core.Services.Interfaces.ServicesInterfaces;
 using NewsAggregator.Models;
 using NewsAggregator.Models.ViewModels.News;
-using NewsAggregator.Services.Implementation.NewsParsers;
-using Serilog;
 
 namespace NewsAggregator.Controllers
 {
@@ -71,11 +69,11 @@ namespace NewsAggregator.Controllers
                 Category = news.Category,
                 TitleImage = news.TitleImage,
                 Comments = comment,
-                
-
             };
             return View(viewModel);
         }
+
+
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AggregateNews()
         {
@@ -86,11 +84,9 @@ namespace NewsAggregator.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AggregateNews(NewsDto news)
         {
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
+            
             await _newsService.AggregateNews();
-            stopwatch.Stop();
-            Log.Information($"Aggregate time all sources {stopwatch.ElapsedMilliseconds}");
+            
             return RedirectToAction(nameof(Index));
         }
 
@@ -110,9 +106,9 @@ namespace NewsAggregator.Controllers
         // POST: News/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(NewsDto news)
+        public async Task<IActionResult> DeleteConfirmed(NewsViewModel model)   
         {
-            await _newsService.DeleteNews(news);
+            await _newsService.DeleteNews(model.Id);
 
             return RedirectToAction(nameof(Index));
         }

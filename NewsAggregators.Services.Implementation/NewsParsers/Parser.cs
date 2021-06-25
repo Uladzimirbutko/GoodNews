@@ -62,6 +62,7 @@ namespace NewsAggregator.Services.Implementation.NewsParsers
             });
 
             var newsDtos = newsInfos.Where(news => !newsUrls.Any(n => n.Equals(news.Url)));
+
             return newsDtos;
 
         }

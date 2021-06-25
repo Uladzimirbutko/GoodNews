@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NewsAggregator.Core.Services.Interfaces;
+using NewsAggregator.Core.Services.Interfaces.ServicesInterfaces;
 
 namespace NewsAggregator.Controllers
 {

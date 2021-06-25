@@ -18,37 +18,39 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
 
         public IEnumerable<News> Parsing(string url)
         {
-            using var reader = XmlReader.Create(url);
-            var feed = SyndicationFeed.Load(reader);
-            reader.Close();
+            
+                using var reader = XmlReader.Create(url);
+                var feed = SyndicationFeed.Load(reader);
+                reader.Close();
 
-            var newsCollection = new ConcurrentBag<News>();
+                var newsCollection = new ConcurrentBag<News>();
 
-            Parallel.ForEach(feed.Items, item =>
-            {
-                //foreach (var item in feed.Items)
-                //{
-                var news = new News()
+                Parallel.ForEach(feed.Items, item =>
                 {
-                    Id = Guid.NewGuid(),
-                    Article = item.Title.Text,
-                    Body = BodyParser(item.Id),
-                    Summary = Summary(item.Summary.Text),
-                    PublicationDate = item.PublishDate.LocalDateTime,
-                    RssSourceId = _sourceId,
-                    Url = item.Id,
-                    TitleImage = ImageParser(item.Id),
-                    Category = item.Categories[0].Name.ToUpper(),
+                    //foreach (var item in feed.Items)
+                    //{
+                    var news = new News()
+                    {
+                        Id = Guid.NewGuid(),
+                        Article = item.Title.Text,
+                        Body = BodyParser(item.Id),
+                        Summary = Summary(item.Summary.Text),
+                        PublicationDate = item.PublishDate.LocalDateTime,
+                        RssSourceId = _sourceId,
+                        Url = item.Id,
+                        TitleImage = ImageParser(item.Id),
+                        Category = item.Categories[0].Name.ToUpper(),
 
-                };
+                    };
 
-                if (!String.IsNullOrEmpty(news.Body) && !String.IsNullOrEmpty(news.Summary))
-                {
-                    newsCollection.Add(news);
-                }
-            });
-            //}
-            return newsCollection;
+                    if (!String.IsNullOrEmpty(news.Body) && !String.IsNullOrEmpty(news.Summary))
+                    {
+                        newsCollection.Add(news);
+                    }
+                });
+                //}
+                return newsCollection;
+
         }
 
         public string Summary(string description)
@@ -65,28 +67,26 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
             try
             {
                 var nodes = new HtmlWeb().Load(url)?
-                    .DocumentNode.SelectSingleNode("//section[@class='article__img']");
-                if (nodes == null)
+                    .DocumentNode.SelectSingleNode("//section[@class='article__img']")?.OuterHtml;
+
+                if (string.IsNullOrEmpty(nodes))
                 {
                     return "/img/Wylsacom.jpg";
                 }
 
-                var outerHtml = nodes.OuterHtml;
                 var patternLinkImg = "(https.*?jpg)";
 
-                outerHtml = Regex.Match(outerHtml, patternLinkImg).Value;
+                nodes = Regex.Match(nodes, patternLinkImg).Value;
 
-                if (string.IsNullOrEmpty(outerHtml))
-                {
-                    return "/img/Wylsacom.jpg";
-                }
-                return outerHtml;
+                
+                return nodes;
             }
             catch (Exception e)
             {
                 Log.Error($"Error in Image wylsacomParser{e.Message}");
                 return "/img/Wylsacom.jpg";
             }
+
 
         }
 
@@ -95,11 +95,11 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
             try
             {
                 var nodes = new HtmlWeb().Load(bodyUrl)?
-                    .DocumentNode.SelectSingleNode("//div[@class='content__inner']").OuterHtml;
+                    .DocumentNode.SelectSingleNode("//div[@class='content__inner']")?.OuterHtml;
 
                 if (string.IsNullOrEmpty(nodes))
                 {
-                    Log.Information($"News Url {bodyUrl} is not invalid. Return null");
+                    Log.Information($"Body Wylsacom {bodyUrl} is null");
                     return null;
                 }
 
@@ -114,8 +114,6 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
                     "<img loading=\"lazy\" class=\"alignnone size-full",
                 };
 
-                //foreach (var old in oldValue)
-                //{
                 Parallel.ForEach(oldImgValue, old =>
                 {
                     if (nodes.Contains(old))
@@ -125,10 +123,6 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
                         {
                             nodes = nodes.Replace(old, "<img class=\"img-fluid\"");
                         }
-                        //else if (nodes.Contains("<img loading=\"lazy\" class=\"alignnone"))
-                        //{
-                        //    nodes = nodes.Replace(old, "<img class=\"img-fluid\"");
-                        //}
                     }
                 });
 

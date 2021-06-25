@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\NewsAggregator.Core.DataTransferObjects\NewsAggregator.Core.DataTransferObjects.csproj" />
     <ProjectReference Include="..\NewsAggregator.DAL.Entities\NewsAggregator.DAL.Core.csproj" />
     <ProjectReference Include="..\NewsAggregator.DAL.Interfaces\NewsAggregator.DAL.Repositories.Interfaces.csproj" />
   </ItemGroup>

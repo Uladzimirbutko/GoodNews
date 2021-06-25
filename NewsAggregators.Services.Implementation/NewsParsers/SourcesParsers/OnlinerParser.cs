@@ -66,20 +66,15 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
             try
             {
                 var nodes = new HtmlWeb().Load(url)?
-                    .DocumentNode.SelectSingleNode("//div[@class='news-header__image']");
-                
-                if (nodes == null)
+                    .DocumentNode.SelectSingleNode("//div[@class='news-header__image']")?.OuterHtml;
+
+                if (string.IsNullOrEmpty(nodes))
                 {
                     return "/img/Onliner.jpg";
                 }
-                var outerHtml = nodes.OuterHtml;
+                var regex = new Regex(@"(https?:\/\/)?([\w-]{1,32}\.[\w-]{1,32})[^\s@]*jpeg").Match(nodes).Value;
 
-                var regex = new Regex(@"(https?:\/\/)?([\w-]{1,32}\.[\w-]{1,32})[^\s@]*jpeg").Match(outerHtml).Value;
 
-                if (string.IsNullOrEmpty(outerHtml))
-                {
-                    return "/img/Wylsacom.jpg";
-                }
                 return regex;
             }
             catch (Exception e)

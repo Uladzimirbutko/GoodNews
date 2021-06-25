@@ -8,7 +8,7 @@
 
 
 <img src="@Model.TitleImage" class="img-fluid" alt="Img">
-<div>@Model.Category</div>
+<div>Категория: @Model.Category</div>
 
 <div class="align-content-center">
     @Html.Raw(Model.Body)
@@ -25,10 +25,7 @@
     <button id="comments-display-switcher" class="btn btn-light col-sm-12" onclick="toggleComments('@Model.Id')">Показать комментарии</button>
     <div class="container">
         <div id="comments-container" class="row">
-            @*@foreach (var comment in Model.Comments)
-                {
-                    @await Html.PartialAsync("CommentPartial", comment)
-                }*@
+            
         </div>
     </div>
 
@@ -36,5 +33,4 @@
 @section Scripts
 {
     <script src="~/js/comments.js"></script>
-    @*<script src="~/js/comments-jquery.js"></script>*@
 }
