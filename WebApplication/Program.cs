@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Serilog;
+using Serilog.Events;
 
 namespace WebApplication
 {
@@ -13,6 +15,13 @@ namespace WebApplication
     {
         public static void Main(string[] args)
         {
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Override("Microsoft", LogEventLevel.Error)
+                .Enrich.FromLogContext()
+                .WriteTo.File(@"F:\Logging NewsAggregator\LogFile.log",
+                    LogEventLevel.Information)
+                .CreateLogger();
+
             CreateHostBuilder(args).Build().Run();
         }
 

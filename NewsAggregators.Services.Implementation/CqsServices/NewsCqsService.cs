@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
@@ -8,6 +12,7 @@ using NewsAggregator.Core.Services.Interfaces.ServicesInterfaces;
 using NewsAggregator.DAL.CQRS.Commands.NewsCommands;
 using NewsAggregator.DAL.CQRS.Queries.NewsQueries;
 using NewsAggregator.Services.Implementation.NewsParsers;
+using NewsAggregator.Services.Implementation.NewsRating;
 using Serilog;
 
 namespace NewsAggregator.Services.Implementation.CqsServices
@@ -17,13 +22,16 @@ namespace NewsAggregator.Services.Implementation.CqsServices
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
         private readonly IRssSourceService _rssSourceService;
+        private readonly INewsRatingService _newsRatingService;
 
 
-        public NewsCqsService(IMapper mapper, IMediator mediator, IRssSourceService rssSourceService)
+
+        public NewsCqsService(IMapper mapper, IMediator mediator, IRssSourceService rssSourceService, INewsRatingService newsRatingService)
         {
             _mapper = mapper;
             _mediator = mediator;
             _rssSourceService = rssSourceService;
+            _newsRatingService = newsRatingService;
         }
 
 
@@ -54,7 +62,7 @@ namespace NewsAggregator.Services.Implementation.CqsServices
             }
         }
 
-        
+
         public async Task<int> AddRange(IEnumerable<NewsDto> news)
         {
             try
@@ -67,6 +75,22 @@ namespace NewsAggregator.Services.Implementation.CqsServices
                 return 0;
 
             }
+        }
+
+        public async Task<int> UpdateNews(IEnumerable<NewsDto> news)
+        {
+            try
+            {
+                var count = await _mediator.Send(new UpdateNewsCommand(news));
+                Log.Information($"Updaded {count} News");
+                return count;
+            }
+            catch (Exception e)
+            {
+                Log.Error($"Error in Update {e.Message}");
+                return default;
+            }
+
         }
 
         public async Task DeleteNews(Guid id)
@@ -114,12 +138,11 @@ namespace NewsAggregator.Services.Implementation.CqsServices
 
                 return newsInfos;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Log.Error($"Aggregation was failed{e.Message}");
                 return null;
             }
-
 
         }
 
@@ -136,7 +159,23 @@ namespace NewsAggregator.Services.Implementation.CqsServices
             }
         }
 
+        public async Task RateNews()
+        {
+            var getAllNewsWhereRatingEquals0 = await _mediator.Send(new GetAllNewsWithoutRatingQuery());
+
+
+            if (getAllNewsWhereRatingEquals0 != null)
+            {
+                var newsWithRating = await _newsRatingService.Rating(getAllNewsWhereRatingEquals0);
+
+                await UpdateNews(newsWithRating);
+            }
+
+
+        }
 
     }
 
 }
+
+

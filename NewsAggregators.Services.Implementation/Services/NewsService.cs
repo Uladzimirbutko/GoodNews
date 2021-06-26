@@ -58,6 +58,11 @@ namespace NewsAggregator.Services.Implementation.Services
            
         }
 
+        public async Task RateNews()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<IEnumerable<NewsDto>> GetAllNews()
         {
             return await _unitOfWork.News.GetAll()
@@ -104,6 +109,11 @@ namespace NewsAggregator.Services.Implementation.Services
                 Log.Error($"Error in AddRange. {e.Message}");
                 return 0;
             }
+        }
+
+        public async Task<int> UpdateNews(IEnumerable<NewsDto> news)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task DeleteNews(Guid id)

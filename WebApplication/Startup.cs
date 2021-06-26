@@ -13,6 +13,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using AutoMapper;
+using Hangfire;
+using Hangfire.SqlServer;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NewsAggregator.Core.Services.Interfaces;
@@ -25,6 +27,7 @@ using NewsAggregator.DAL.Repositories.Implementation.Repositories;
 using NewsAggregator.DAL.Repositories.Interfaces;
 using NewsAggregator.Services.Implementation.CqsServices;
 using NewsAggregator.Services.Implementation.Mapping;
+using NewsAggregator.Services.Implementation.NewsRating;
 using NewsAggregator.Services.Implementation.Services;
 
 namespace WebApplication
@@ -41,33 +44,34 @@ namespace WebApplication
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var connString = Configuration.GetSection("ConnectionStrings")
+                .GetValue<string>("DefaultConnection");
             services.AddDbContext<NewsAggregatorContext>(opt =>
-                opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                opt.UseSqlServer(connString));
 
-            #region Repositories
-
-            services.AddTransient<IBaseRepository<News>, NewsRepository>();
-            services.AddTransient<IBaseRepository<Comment>, CommentRepository>();
-            services.AddTransient<IBaseRepository<Role>, RoleRepository>();
-            services.AddTransient<IBaseRepository<RssSource>, RssSourceRepository>();
-            services.AddTransient<IBaseRepository<User>, UserRepository>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            #endregion
 
             #region Servies
 
             services.AddScoped<INewsService, NewsCqsService>();
-
+            services.AddScoped<INewsRatingService, NewsRatingService>();
             services.AddScoped<IRssSourceService, RssSourceCqsService>();
-
-            services.AddScoped<IUserService, UserService>();
-
-            services.AddScoped<IRoleService, RoleService>();
-
-            services.AddScoped<ICommentService, CommentService>();
-
+            
             #endregion
+
+            services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(connString, new SqlServerStorageOptions
+                {
+                    CommandBatchMaxTimeout = TimeSpan.FromMinutes(10),
+                    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(10),
+                    QueuePollInterval = TimeSpan.Zero,
+                    UseRecommendedIsolationLevel = true,
+                    DisableGlobalLocks = true
+                }));
+
+            services.AddHangfireServer();
 
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -91,14 +95,24 @@ namespace WebApplication
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApplication v1"));
+
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebApplication v1"));
+
+
+            app.UseHangfireServer();
+            app.UseHangfireDashboard();
+
+            var newsService = serviceProvider.GetService(typeof(INewsService)) as INewsService;
+            RecurringJob.AddOrUpdate(() => newsService.RateNews(), " */3 * * * * ");
+            RecurringJob.AddOrUpdate(() => newsService.AggregateNews(), " 0 * * * * ");
 
             app.UseHttpsRedirection();
 
@@ -109,6 +123,7 @@ namespace WebApplication
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHangfireDashboard();
             });
         }
     }
