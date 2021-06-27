@@ -42,7 +42,7 @@ namespace NewsAggregator.Services.Implementation.Services
         
         public async Task<UserDto> GetUserByEmail(string email)
         {
-            //return _mapper.Map<UserDto>(await _unitOfWork.Users.FindBy(user1 => user1.Email.Equals(email)).FirstOrDefaultAsync());
+            
             try
             {
                 var user = await _unitOfWork.Users.GetAll().Where(user => user.Email.Equals(email)).FirstOrDefaultAsync();
@@ -105,6 +105,11 @@ namespace NewsAggregator.Services.Implementation.Services
                 Log.Error("Error in Register User" + e.Message);
                 return false;
             }
+        }
+
+        public async Task<string> GetUserRoleNameByEmail(string email)
+        {
+            throw new NotImplementedException();
         }
     }
 }

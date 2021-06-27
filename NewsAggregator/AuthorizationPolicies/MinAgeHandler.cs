@@ -11,9 +11,7 @@ namespace NewsAggregator.AuthorizationPolicies
         {
             if (context.User.HasClaim(cl => cl.Type == "age"))
             {
-                var age = Convert.ToInt32(context.User
-                    .FindFirst(cl => cl.Type == "age")
-                    .Value);
+                var age = Convert.ToInt32(context.User.FindFirst(cl => cl.Type == "age").Value);
 
                 if (age >= requirement.MinAge && age <= 100)
                 {

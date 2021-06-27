@@ -14,13 +14,11 @@ namespace NewsAggregator.DAL.CQRS.QueryHandlers.NewsQueryHandlers
         IRequestHandler<GetAllUrlsFromNewsQuery, IEnumerable<string>>
     {
         private readonly NewsAggregatorContext _dbContext;
-        private readonly IMapper _mapper;
 
 
-        public GetAllUrlsFromNewsQueryHandler(NewsAggregatorContext dbContext, IMapper mapper)
+        public GetAllUrlsFromNewsQueryHandler(NewsAggregatorContext dbContext)
         {
             _dbContext = dbContext;
-            _mapper = mapper;
         }
 
         public async Task<IEnumerable<string>> Handle(GetAllUrlsFromNewsQuery request, CancellationToken cancellationToken)

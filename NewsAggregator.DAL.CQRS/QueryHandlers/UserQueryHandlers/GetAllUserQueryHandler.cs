@@ -8,28 +8,27 @@ using Microsoft.EntityFrameworkCore;
 using NewsAggregator.Core.DataTransferObjects;
 using NewsAggregator.DAL.Core;
 using NewsAggregator.DAL.CQRS.Queries.NewsQueries;
+using NewsAggregator.DAL.CQRS.Queries.UserQueries;
 
-namespace NewsAggregator.DAL.CQRS.QueryHandlers.NewsQueryHandlers
+namespace NewsAggregator.DAL.CQRS.QueryHandlers.UserQueryHandlers
 {
-    public class GetAllNewsWithoutRatingQueryHandler :
-        IRequestHandler<GetAllNewsWithoutRatingQuery, IEnumerable<NewsDto>>
+    public class GetAllUserQueryHandler :
+        IRequestHandler<GetAllUserQuery, IEnumerable<UserDto>>
     {
         private readonly NewsAggregatorContext _dbContext;
         private readonly IMapper _mapper;
 
 
-        public GetAllNewsWithoutRatingQueryHandler(NewsAggregatorContext dbContext, IMapper mapper)
+        public GetAllUserQueryHandler(NewsAggregatorContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<NewsDto>> Handle(GetAllNewsWithoutRatingQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<UserDto>> Handle(GetAllUserQuery request, CancellationToken cancellationToken)
         {
-            var news = await _dbContext.News
-                .Where(rt => rt.Rating.Equals(0))
-                .Take(29)
-                .Select(dto => _mapper.Map<NewsDto>(dto))
+            var news = await _dbContext.Users
+                .Select(dto => _mapper.Map<UserDto>(dto))
                 .ToListAsync(cancellationToken: cancellationToken);
             return news;
         }

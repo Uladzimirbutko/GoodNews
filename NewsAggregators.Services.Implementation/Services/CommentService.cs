@@ -12,7 +12,7 @@ using Serilog;
 
 namespace NewsAggregator.Services.Implementation.Services
 {
-    public class CommentService :ICommentService
+    public class CommentService : ICommentService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -36,52 +36,54 @@ namespace NewsAggregator.Services.Implementation.Services
                 .ToListAsync();
         }
 
-        public async Task Add(CommentDto comment)
+        public async Task<int> Add(CommentDto comment)
         {
             try
             {
                 await _unitOfWork.Comments.Add(_mapper.Map<Comment>(comment));
-
-                await _unitOfWork.SaveChangesAsync();
+                Log.Information("Add comment completed");
+                return await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception e)
             {
                 Log.Error($"Add comment failed {e.Message}");
+                return 0;
             }
 
-            Log.Information("Add comment completed");
         }
 
-        public async Task Edit(CommentDto comment)
+        public async Task<int> Edit(CommentDto comment)
         {
             try
             {
                 await _unitOfWork.Comments.Update(_mapper.Map<Comment>(comment));
-
-                await _unitOfWork.SaveChangesAsync();
+                Log.Information("Edit comment completed");
+                return await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception e)
             {
                 Log.Error($"Edit comment failed {e.Message}");
+                return 0;
             }
 
-            Log.Information("Edit comment completed");
+
         }
 
-        public async Task Delete(CommentDto comment)
+        public async Task<int> Delete(CommentDto comment)
         {
             try
             {
                 await _unitOfWork.Comments.Remove(await _unitOfWork.Comments.GetById(comment.Id));
-
-                await _unitOfWork.SaveChangesAsync();
+                Log.Information("Delete comment completed");
+                return await _unitOfWork.SaveChangesAsync();
             }
             catch (Exception e)
             {
                 Log.Error($"Delete comment failed {e.Message}");
+                return 0;
             }
 
-            Log.Information("Delete comment completed");
+
         }
     }
 }

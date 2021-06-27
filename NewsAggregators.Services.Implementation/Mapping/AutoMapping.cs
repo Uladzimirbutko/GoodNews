@@ -18,6 +18,9 @@ namespace NewsAggregator.Services.Implementation.Mapping
 
             CreateMap<Comment, CommentDto>().ReverseMap();
 
+            CreateMap<RefreshToken, RefreshTokenDto>().ReverseMap();
+
+
         }
 
     }

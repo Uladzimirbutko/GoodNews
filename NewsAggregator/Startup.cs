@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using NewsAggregator.AuthorizationPolicies;
 using NewsAggregator.Core.Services.Interfaces;
-using NewsAggregator.Core.Services.Interfaces.ServicesInterfaces;
 using NewsAggregator.DAL.Core.Entities;
 using NewsAggregator.DAL.Repositories.Implementation;
 using NewsAggregator.DAL.Repositories.Implementation.Repositories;

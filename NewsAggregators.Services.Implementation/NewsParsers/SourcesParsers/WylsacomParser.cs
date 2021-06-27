@@ -18,7 +18,9 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
 
         public IEnumerable<News> Parsing(string url)
         {
-            
+
+            try
+            {
                 using var reader = XmlReader.Create(url);
                 var feed = SyndicationFeed.Load(reader);
                 reader.Close();
@@ -50,6 +52,12 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
                 });
                 //}
                 return newsCollection;
+            }
+            catch (Exception e)
+            {
+                Log.Error($"Error Parse Onliner News {e.Message}");
+                return null;
+            }
 
         }
 

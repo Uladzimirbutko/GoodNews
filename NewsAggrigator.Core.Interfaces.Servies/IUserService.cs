@@ -14,5 +14,6 @@ namespace NewsAggregator.Core.Services.Interfaces
         Task<string> GetUserEmailByRefreshToken(string refreshToken);
         string GetPasswordHash(string password);
         Task<bool> RegisterUser(UserDto model);
+        Task<string> GetUserRoleNameByEmail(string email);
     }
 }

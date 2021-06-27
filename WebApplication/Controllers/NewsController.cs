@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using NewsAggregator.Core.Services.Interfaces.ServicesInterfaces;
+using NewsAggregator.Core.Services.Interfaces;
 using Serilog;
 
 namespace WebApplication.Controllers

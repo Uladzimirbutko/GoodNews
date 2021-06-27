@@ -6,7 +6,8 @@ namespace NewsAggregator.Models.ViewModels.AccountViewModel
     {
         
         [Required(ErrorMessage = "Введите Email.")]
-        [EmailAddress(ErrorMessage = "Поле заполнено некорректно")]
+        [RegularExpression(@".+\@.+\..+", ErrorMessage = "Поле заполнено некорректно")]
+        [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
 

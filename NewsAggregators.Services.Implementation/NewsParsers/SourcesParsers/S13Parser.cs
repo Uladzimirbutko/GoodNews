@@ -18,38 +18,46 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
 
         public IEnumerable<News> Parsing(string url)
         {
-            using var reader = XmlReader.Create(url);
-            var feed = SyndicationFeed.Load(reader);
-            reader.Close();
-
-            var newsCollection = new ConcurrentBag<News>();
-
-            Parallel.ForEach(feed.Items, item =>
+            try
             {
-            //    foreach (var item in feed.Items)
-            //{
-                var news = new News()
+                using var reader = XmlReader.Create(url);
+                var feed = SyndicationFeed.Load(reader);
+                reader.Close();
+
+                var newsCollection = new ConcurrentBag<News>();
+
+                Parallel.ForEach(feed.Items, item =>
                 {
-                    Id = Guid.NewGuid(),
-                    Article = item.Title.Text,
-                    Body = BodyParser(item.Id),
-                    Summary = Summary(item.Summary.Text),
-                    PublicationDate = item.PublishDate.LocalDateTime.ToLocalTime(),
-                    RssSourceId = _sourceId,
-                    Url = item.Id,
-                    TitleImage = "/img/S13.jpg",
-                    Category = item.Categories[0].Name.ToUpper(),
+                    //    foreach (var item in feed.Items)
+                    //{
+                    var news = new News()
+                    {
+                        Id = Guid.NewGuid(),
+                        Article = item.Title.Text,
+                        Body = BodyParser(item.Id),
+                        Summary = Summary(item.Summary.Text),
+                        PublicationDate = item.PublishDate.LocalDateTime.ToLocalTime(),
+                        RssSourceId = _sourceId,
+                        Url = item.Id,
+                        TitleImage = "/img/S13.jpg",
+                        Category = item.Categories[0].Name.ToUpper(),
 
-                };
-                if (!String.IsNullOrEmpty(news.Body) && !String.IsNullOrEmpty(news.Summary))
+                    };
+                    if (!String.IsNullOrEmpty(news.Body) && !String.IsNullOrEmpty(news.Summary))
 
-                {
-                    newsCollection.Add(news);
-                }
-                //}
-            });
+                    {
+                        newsCollection.Add(news);
+                    }
+                    //}
+                });
 
-            return newsCollection;
+                return newsCollection;
+            }
+            catch (Exception e)
+            {
+                Log.Error($"Error Parse Onliner News {e.Message}");
+                return null;
+            }
         }
 
         public string Summary(string summary)

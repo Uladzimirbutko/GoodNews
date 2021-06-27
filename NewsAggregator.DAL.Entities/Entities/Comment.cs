@@ -10,10 +10,10 @@ namespace NewsAggregator.DAL.Core.Entities
 
 
 
-        public Guid NewsId { get; set; } //FK
+        public Guid NewsId { get; set; } 
         public News News { get; set; }
 
-        public Guid UserId { get; set; } //FK
+        public Guid UserId { get; set; } 
         public string UserEmail { get; set; }
         public User User { get; set; }
 

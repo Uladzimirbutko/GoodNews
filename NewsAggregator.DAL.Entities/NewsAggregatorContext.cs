@@ -11,6 +11,8 @@ namespace NewsAggregator.DAL.Core
         public DbSet<RssSource> RssSources { get; set; }
         public DbSet<User> Users { get; set; }
 
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+
         public NewsAggregatorContext(DbContextOptions<NewsAggregatorContext> options) 
             :base(options)
         {

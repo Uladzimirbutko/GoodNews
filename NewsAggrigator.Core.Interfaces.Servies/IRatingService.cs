@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace NewsAggregator.Core.Services.Interfaces.ServicesInterfaces
+namespace NewsAggregator.Core.Services.Interfaces
 {
     public interface IRatingService
     {

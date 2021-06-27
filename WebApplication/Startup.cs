@@ -11,14 +11,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using Hangfire;
 using Hangfire.SqlServer;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using NewsAggregator.Core.Services.Interfaces;
-using NewsAggregator.Core.Services.Interfaces.ServicesInterfaces;
 using NewsAggregator.DAL.Core;
 using NewsAggregator.DAL.Core.Entities;
 using NewsAggregator.DAL.CQRS.QueryHandlers.RssSourceQueryHandlers;
@@ -29,6 +31,7 @@ using NewsAggregator.Services.Implementation.CqsServices;
 using NewsAggregator.Services.Implementation.Mapping;
 using NewsAggregator.Services.Implementation.NewsRating;
 using NewsAggregator.Services.Implementation.Services;
+using WebApplication.Authentication.JWT;
 
 namespace WebApplication
 {
@@ -51,12 +54,19 @@ namespace WebApplication
 
 
             #region Servies
-
+            services.AddScoped<ICommentService, CommentCqsService>();
             services.AddScoped<INewsService, NewsCqsService>();
-            services.AddScoped<INewsRatingService, NewsRatingService>();
+            services.AddScoped<IRefreshTokenService, RefreshTokenCqsService>();
+            services.AddScoped<IRoleService, RoleCqsService>();
             services.AddScoped<IRssSourceService, RssSourceCqsService>();
-            
+            services.AddScoped<IUserService, UserCqsService>();
+            services.AddScoped<IJwtAuthentication, JwtAuthentication>();
+
+            services.AddScoped<INewsRatingService, NewsRatingService>();
+
             #endregion
+
+            #region Hangfire
 
             services.AddHangfire(configuration => configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
@@ -73,6 +83,9 @@ namespace WebApplication
 
             services.AddHangfireServer();
 
+            #endregion
+
+            #region Other libraries
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             var mapperConfig = new MapperConfiguration(mc =>
@@ -84,7 +97,44 @@ namespace WebApplication
 
             services.AddMediatR(typeof(GetAllRssSourcesQueryHandler).GetTypeInfo().Assembly);
 
+            #endregion
 
+            #region Authentication
+
+            services.AddAuthentication(opt =>
+                {
+                    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(opt =>
+                {
+                    opt.RequireHttpsMetadata = false;
+                    opt.SaveToken = true;
+
+                    opt.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        //true - encode our key:
+                        ValidateIssuerSigningKey = true,
+                        //Encode out key using this key:
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])),
+                        //we don't wanna validate for what this key was given:
+                        ValidateIssuer = false,
+                        //we don't wanna validate who(our app) gave this key:
+                        ValidateAudience = false,
+                        //Validate expireAt time
+                        ClockSkew = TimeSpan.Zero 
+                    };
+                });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("Default", builder => builder
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod());
+            });
+
+            #endregion
 
 
             services.AddControllers();
@@ -111,13 +161,16 @@ namespace WebApplication
             app.UseHangfireDashboard();
 
             var newsService = serviceProvider.GetService(typeof(INewsService)) as INewsService;
-            RecurringJob.AddOrUpdate(() => newsService.RateNews(), " */3 * * * * ");
-            RecurringJob.AddOrUpdate(() => newsService.AggregateNews(), " 0 * * * * ");
+            //RecurringJob.AddOrUpdate(() => newsService.RateNews(), " */30 * * * * ");
+            //RecurringJob.AddOrUpdate(() => newsService.AggregateNews(), " 0 * * * * ");
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
+            app.UseCors("Default");
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

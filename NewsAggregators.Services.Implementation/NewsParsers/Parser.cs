@@ -31,7 +31,10 @@ namespace NewsAggregator.Services.Implementation.NewsParsers
                             var parser = new OnlinerParser();
 
                             var parsedList = parser.Parsing(sourceDto.Url);
-
+                            if (parsedList == null)
+                            {
+                                break;
+                            }
                             newsInfos.AddRange(parsedList.Select(news => _mapper.Map<NewsDto>(news)));
 
                             break;
@@ -42,7 +45,10 @@ namespace NewsAggregator.Services.Implementation.NewsParsers
                             var parser = new S13Parser();
 
                             var parsedList = parser.Parsing(sourceDto.Url);
-
+                            if (parsedList == null)
+                            {
+                                break;
+                            }
                             newsInfos.AddRange(parsedList.Select(news => _mapper.Map<NewsDto>(news)));
 
                             break;
@@ -53,7 +59,10 @@ namespace NewsAggregator.Services.Implementation.NewsParsers
                             var parser = new WylsacomParser();
 
                             var parsedList = parser.Parsing(sourceDto.Url);
-
+                            if (parsedList == null)
+                            {
+                                break;
+                            }
                             newsInfos.AddRange(parsedList.Select(item => _mapper.Map<NewsDto>(item)));
 
                             break;

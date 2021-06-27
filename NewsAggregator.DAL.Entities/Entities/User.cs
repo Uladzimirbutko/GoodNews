@@ -15,6 +15,7 @@ namespace NewsAggregator.DAL.Core.Entities
         public Role Role { get; set; }
 
         public ICollection<Comment> Comments { get; set; }
+        public  ICollection<RefreshToken> RefreshTokens { get; set; }
 
     }
 }

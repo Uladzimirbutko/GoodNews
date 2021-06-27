@@ -3,7 +3,7 @@ using NewsAggregator.DAL.Core.Entities;
 
 namespace NewsAggregator.Core.DataTransferObjects
 {
-    public class NewsDto : IDtoModel // паттерн DTO просто модели которые предназначены для транспортировки данных
+    public class NewsDto  // паттерн DTO просто модели которые предназначены для транспортировки данных
     {
         public Guid Id { get; set; } 
         public string Article { get; set; }

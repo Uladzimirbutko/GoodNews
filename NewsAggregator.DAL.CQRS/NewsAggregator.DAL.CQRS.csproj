@@ -14,4 +14,13 @@
     <ProjectReference Include="..\NewsAggregator.DAL.Entities\NewsAggregator.DAL.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="CommandHandlers\RefreshTokenComandsHandlers\" />
+    <Folder Include="CommandHandlers\RoleCommandHandlers\" />
+    <Folder Include="CommandHandlers\UserCommandHandlers\" />
+    <Folder Include="Commands\RefreshTokenComands\" />
+    <Folder Include="Commands\UserCommands\" />
+    <Folder Include="Queries\RefreshTokenQuery\" />
+  </ItemGroup>
+
 </Project>

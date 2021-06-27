@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using NewsAggregator.Core.DataTransferObjects;
-using NewsAggregator.Core.Services.Interfaces.ServicesInterfaces;
+using NewsAggregator.Core.Services.Interfaces;
 using NewsAggregator.DAL.CQRS.Commands.NewsCommands;
 using NewsAggregator.DAL.CQRS.Queries.NewsQueries;
 using NewsAggregator.Services.Implementation.NewsParsers;
@@ -67,7 +67,9 @@ namespace NewsAggregator.Services.Implementation.CqsServices
         {
             try
             {
-                return await _mediator.Send(new AddRangeNewsCommand(news));
+                var result = await _mediator.Send(new AddRangeNewsCommand(news));
+                Log.Information($"Added {result} News");
+                return result;
             }
             catch (Exception e)
             {
@@ -161,12 +163,12 @@ namespace NewsAggregator.Services.Implementation.CqsServices
 
         public async Task RateNews()
         {
-            var getAllNewsWhereRatingEquals0 = await _mediator.Send(new GetAllNewsWithoutRatingQuery());
+            var getAllNewsWithoutRatingQuery = await _mediator.Send(new GetAllNewsWithoutRatingQuery());
 
 
-            if (getAllNewsWhereRatingEquals0 != null)
+            if (getAllNewsWithoutRatingQuery != null)
             {
-                var newsWithRating = await _newsRatingService.Rating(getAllNewsWhereRatingEquals0);
+                var newsWithRating = await _newsRatingService.Rating(getAllNewsWithoutRatingQuery);
 
                 await UpdateNews(newsWithRating);
             }

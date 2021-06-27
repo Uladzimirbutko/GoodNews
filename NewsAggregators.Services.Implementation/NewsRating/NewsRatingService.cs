@@ -7,10 +7,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web;
-using MediatR;
 using NewsAggregator.Core.DataTransferObjects;
-using NewsAggregator.Core.Services.Interfaces.ServicesInterfaces;
 using NewsAggregator.Services.Implementation.NewsRating.JsonModels;
 using Newtonsoft.Json;
 using Serilog;
@@ -34,16 +31,22 @@ namespace NewsAggregator.Services.Implementation.NewsRating
                     var body = newsDto.Body;
 
                     body = ClearBody(body);
+
                     var responseNews = await Response(body);
 
                     if (responseNews == null)
                     {
+                        Log.Error($" Response news is unsucceeded {newsDto.Url}");
                         continue;
                     }
 
                     var rating = RatingNews(afinn, responseNews);
 
-                    newsDto.Rating = rating;
+                    if (rating !=null)
+                    {
+                        newsDto.Rating = (float) rating;  
+                    }
+                    
 
                     newsWithRating.Add(newsDto);
 
@@ -58,26 +61,34 @@ namespace NewsAggregator.Services.Implementation.NewsRating
             }
         }
 
-        private float RatingNews(Dictionary<string, int> afinn, IEnumerable<string> words)
+        private float? RatingNews(Dictionary<string, int> afinn, IEnumerable<string> words)
         {
+            var afin = afinn;
             try
             {
-                var counter = 0;
+                var count = 0;
                 var rate = 0;
                 foreach (var word in words)
                 {
-                    foreach (var pair in afinn.Where(pair => word.Equals(pair.Key)))
+                    foreach (var pair in afin.Where(pairs => pairs.Key.Equals(word)))
                     {
-                        counter++;
+                        count ++;
                         rate += pair.Value;
                     }
                 }
-                return counter != 0 ? (float)rate / counter * 100 : 0.0f;
+
+                if (count == 0)
+                {
+                    return null;
+                }
+                var result = (float) rate / count * 100;
+
+                return result;
             }
             catch (Exception e)
             {
-                Log.Error($"Error {e.Message}");
-                return 0.0f;
+                Log.Error($"Error rating news return null {e}");
+                return null;
             }
 
 
@@ -120,8 +131,8 @@ namespace NewsAggregator.Services.Implementation.NewsRating
 
                 if (listResponse == null)
                 {
-                    Log.Error($"Error NewsRate return 0.0f");
-                    return new List<string>() { null };
+                    Log.Error($"Error NewsResponse return null {body} ");
+                    return new List<string> { null };
                 }
                 var lemmasList = listResponse[0].annotations.lemma;
 
@@ -131,7 +142,7 @@ namespace NewsAggregator.Services.Implementation.NewsRating
             }
             catch (Exception e)
             {
-                Log.Error($"{e.Message}");
+                Log.Error($"This Body is invalid {e.Message}. {body}");
                 return new List<string>() { null };
             }
         }
@@ -145,7 +156,7 @@ namespace NewsAggregator.Services.Implementation.NewsRating
             {
                 var clear = Regex.Replace(body, @"(<.*?>)|(http.*?\s)|(\n\t)", " ");
                 char[] ch = { '.', '!', '?', '"', '\r' };
-                var split = clear.Split(ch);
+                var split = clear.Split(ch, StringSplitOptions.RemoveEmptyEntries);
                 var agg = split.Aggregate("", (current, n) => current + $"{n.Trim()} ");
                 return agg;
             }

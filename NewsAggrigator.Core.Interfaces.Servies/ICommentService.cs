@@ -10,10 +10,10 @@ namespace NewsAggregator.Core.Services.Interfaces
         Task<CommentDto> GetCommentById(Guid commentId);
         Task<IEnumerable<CommentDto>> GetCommentsByNewsId(Guid newsId);
 
-        Task Add(CommentDto comment);
+        Task<int> Add(CommentDto comment);
 
-        Task Edit(CommentDto comment);
+        Task<int> Edit(CommentDto comment);
 
-        Task Delete(CommentDto comment);
+        Task<int> Delete(CommentDto comment);
     }
 }

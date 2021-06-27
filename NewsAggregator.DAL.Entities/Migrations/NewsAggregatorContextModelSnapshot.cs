@@ -67,7 +67,7 @@ namespace NewsAggregator.DAL.Core.Migrations
                     b.Property<DateTime?>("PublicationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<float>("Rating")
+                    b.Property<float?>("Rating")
                         .HasColumnType("real");
 
                     b.Property<Guid>("RssSourceId")
@@ -87,6 +87,32 @@ namespace NewsAggregator.DAL.Core.Migrations
                     b.HasIndex("RssSourceId");
 
                     b.ToTable("News");
+                });
+
+            modelBuilder.Entity("NewsAggregator.DAL.Core.Entities.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpiresUtc")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("NewsAggregator.DAL.Core.Entities.Role", b =>
@@ -178,6 +204,17 @@ namespace NewsAggregator.DAL.Core.Migrations
                     b.Navigation("RssSource");
                 });
 
+            modelBuilder.Entity("NewsAggregator.DAL.Core.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("NewsAggregator.DAL.Core.Entities.User", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("NewsAggregator.DAL.Core.Entities.User", b =>
                 {
                     b.HasOne("NewsAggregator.DAL.Core.Entities.Role", "Role")
@@ -207,6 +244,8 @@ namespace NewsAggregator.DAL.Core.Migrations
             modelBuilder.Entity("NewsAggregator.DAL.Core.Entities.User", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("RefreshTokens");
                 });
 #pragma warning restore 612, 618
         }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using NewsAggregator.Core.DataTransferObjects;
-using NewsAggregator.Core.Services.Interfaces.ServicesInterfaces;
+using NewsAggregator.Core.Services.Interfaces;
 using NewsAggregator.DAL.Repositories.Implementation;
 
 namespace NewsAggregator.Services.Implementation.Services
