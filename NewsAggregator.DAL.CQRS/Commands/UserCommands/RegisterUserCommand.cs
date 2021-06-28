@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using NewsAggregator.Core.DataTransferObjects;
-using NewsAggregator.DAL.Core.Entities;
 
 namespace NewsAggregator.DAL.CQRS.Commands.UserCommands
 {

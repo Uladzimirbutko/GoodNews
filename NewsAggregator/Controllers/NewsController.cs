@@ -7,6 +7,7 @@ using NewsAggregator.Core.DataTransferObjects;
 using NewsAggregator.Core.Services.Interfaces;
 using NewsAggregator.Models;
 using NewsAggregator.Models.ViewModels.News;
+using Serilog;
 
 namespace NewsAggregator.Controllers
 {
@@ -15,61 +16,78 @@ namespace NewsAggregator.Controllers
     {
         private readonly INewsService _newsService;
         private readonly ICommentService _commentService;
-        private readonly IUserService _userService;
-        private readonly IRssSourceService _rssSourceService;
 
 
-        public NewsController(INewsService newsService, ICommentService commentService, IUserService userService, IRssSourceService rssSourceService)
+        public NewsController(INewsService newsService, ICommentService commentService)
         {
             _newsService = newsService;
             _commentService = commentService;
-            _userService = userService;
-            _rssSourceService = rssSourceService;
         }
+
         [Authorize("18+Content")]
         // GET: News
         public async Task<IActionResult> Index(Guid id, int page = 1)
         {
-            var news = (await _newsService.GetAllNews()).OrderByDescending(dto => dto.PublicationDate).ToList();
-
-            var pageSize = 12;
-
-            var newsPerPages = news.Skip((page - 1) * pageSize).Take(pageSize);
-
-            var pageInfo = new PageInfo()
+            try
             {
-                PageNumber = page,
-                PageSize = pageSize,
-                TotalItems = news.Count
-            };
+                var news = (await _newsService.GetAllNews())
+                    .Where(dto => dto.Rating !=null)
+                    .OrderByDescending(dto => dto.Rating)
+                    .ToList();
 
-            return View(new NewsListWithPaginationInfo()
+                var pageSize = 12;
+
+                var newsPerPages = news.Skip((page - 1) * pageSize).Take(pageSize);
+
+                var pageInfo = new PageInfo()
+                {
+                    PageNumber = page,
+                    PageSize = pageSize,
+                    TotalItems = news.Count
+                };
+
+                return View(new NewsListWithPaginationInfo()
+                {
+                    IsAdmin = HttpContext.User.IsInRole("Admin"),
+                    News = newsPerPages,
+                    PageInfo = pageInfo
+                });
+            }
+            catch (Exception e)
             {
-                IsAdmin = HttpContext.User.IsInRole("Admin"),
-                News = newsPerPages,
-                PageInfo = pageInfo
-            });
+                Log.Error(e.Message);
+                return View();
+            }
         }
         [Authorize("18+Content")]
         // GET: News/Details/5
         public async Task<IActionResult> Details(Guid id)
         {
-            var news = await _newsService.GetNewsById(id);
-            var comment = await _commentService.GetCommentsByNewsId(news.Id);
-
-            var viewModel = new NewsWithCommentsViewModel()
+            try
             {
-                Id = news.Id,
-                Article = news.Article,
-                Body = news.Body,
-                Url = news.Url,
-                Rating = news.Rating,
-                PublicationDate = news.PublicationDate,
-                Category = news.Category,
-                TitleImage = news.TitleImage,
-                Comments = comment,
-            };
-            return View(viewModel);
+                var news = await _newsService.GetNewsById(id);
+                var comment = await _commentService.GetCommentsByNewsId(news.Id);
+
+                var viewModel = new NewsWithCommentsViewModel()
+                {
+                    Id = news.Id,
+                    Article = news.Article,
+                    Body = news.Body,
+                    Url = news.Url,
+                    Rating = news.Rating,
+                    PublicationDate = news.PublicationDate,
+                    Category = news.Category,
+                    TitleImage = news.TitleImage,
+                    Comments = comment,
+                    IsAdmin = HttpContext.User.IsInRole("Admin")
+                };
+                return View(viewModel);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return View();
+            }
         }
 
 
@@ -89,27 +107,20 @@ namespace NewsAggregator.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: News/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var news = await _newsService.GetNewsById(id);
-
-            if (news == null)
+            try
             {
-                return NotFound();
+                await _newsService.DeleteNews(id);
+                return RedirectToAction("Index");
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return RedirectToAction("Details");
             }
 
-            return View(news);
-        }
-
-        // POST: News/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(NewsViewModel model)   
-        {
-            await _newsService.DeleteNews(model.Id);
-
-            return RedirectToAction(nameof(Index));
         }
 
     }

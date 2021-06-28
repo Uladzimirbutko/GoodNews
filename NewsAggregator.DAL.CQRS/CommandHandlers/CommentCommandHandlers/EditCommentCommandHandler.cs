@@ -4,9 +4,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NewsAggregator.DAL.Core;
-using NewsAggregator.DAL.Core.Entities;
 using NewsAggregator.DAL.CQRS.Commands.CommentCommands;
-using NewsAggregator.DAL.CQRS.Commands.NewsCommands;
 
 namespace NewsAggregator.DAL.CQRS.CommandHandlers.CommentCommandHandlers
 {
@@ -23,11 +21,12 @@ namespace NewsAggregator.DAL.CQRS.CommandHandlers.CommentCommandHandlers
 
         public async Task<int> Handle(EditCommentCommand request, CancellationToken cancellationToken)
         {
-           //var comment = await _dbContext.Comments
-           //    .FirstOrDefaultAsync(comment => comment.Id.Equals(request.Comment.Id), cancellationToken: cancellationToken);
-           // comment = _mapper.Map<Comment>(request.Comment);
+            //var comment = await _dbContext.Comments
+            //    .FirstOrDefaultAsync(comment => comment.Id.Equals(request.Comment.Id), cancellationToken: cancellationToken);
+            // comment = _mapper.Map<Comment>(request.Comment);
 
-           _dbContext.Comments.Update(_mapper.Map<Comment>(request.Comment));
+            var commentEnt = await _dbContext.Comments.FirstOrDefaultAsync(comment => comment.Id.Equals(request.Comment.Id), cancellationToken: cancellationToken);
+            commentEnt.Text = request.Comment.Text;
 
             return await _dbContext.SaveChangesAsync(cancellationToken);
         }

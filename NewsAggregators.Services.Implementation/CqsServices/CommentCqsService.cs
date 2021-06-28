@@ -6,7 +6,6 @@ using NewsAggregator.Core.DataTransferObjects;
 using NewsAggregator.Core.Services.Interfaces;
 using NewsAggregator.DAL.CQRS.Commands.CommentCommands;
 using NewsAggregator.DAL.CQRS.Queries.CommentQueries;
-using NewsAggregator.DAL.CQRS.Queries.RoleQueries;
 using Serilog;
 
 namespace NewsAggregator.Services.Implementation.CqsServices
@@ -63,7 +62,9 @@ namespace NewsAggregator.Services.Implementation.CqsServices
         {
             try
             {
-                return await _mediator.Send(new EditCommentCommand(comment));
+                var commentDto = await GetCommentById(comment.Id);
+                commentDto.Text = comment.Text;
+                return await _mediator.Send(new EditCommentCommand(commentDto));
             }
             catch (Exception e)
             {
@@ -72,15 +73,16 @@ namespace NewsAggregator.Services.Implementation.CqsServices
             }
         }
 
-        public async Task<int> Delete(CommentDto comment)
+        public async Task<int> Delete(Guid commentId)
         {
             try
             {
-                return await _mediator.Send(new DeleteCommentCommand(comment));
+                var commentDto = await GetCommentById(commentId);
+                return await _mediator.Send(new DeleteCommentCommand(commentDto));
             }
             catch (Exception e)
             {
-                Log.Error($"Error Delete Comment {e.Message} {comment.Id}");
+                Log.Error($"Error Delete Comment {e.Message} {commentId}");
                 return 0;
             }
         }

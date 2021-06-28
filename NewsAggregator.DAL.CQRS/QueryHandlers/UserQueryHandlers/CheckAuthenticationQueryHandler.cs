@@ -1,11 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using NewsAggregator.Core.DataTransferObjects;
 using NewsAggregator.DAL.Core;
 using NewsAggregator.DAL.CQRS.Queries.UserQueries;
 

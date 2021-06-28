@@ -13,10 +13,10 @@ namespace NewsAggregator.Models.ViewModels.News
         public string Body { get; set; }
         public string TitleImage { get; set; }
         public string Category { get; set; }
-        public float Rating { get; set; }
+        public float? Rating { get; set; }
         public DateTime? PublicationDate { get; set; }
-        public Guid? RssSourceId { get; set; }
-        public string RssSourceName { get; set; }
+        public bool IsAdmin { get; set; }
+
 
         public IEnumerable<CommentDto> Comments { get; set; }
     }

@@ -42,10 +42,11 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
                         Url = item.Id,
                         TitleImage = ImageParser(item.Id),
                         Category = item.Categories[0].Name.ToUpper(),
+                        Rating = null
 
                     };
 
-                    if (!String.IsNullOrEmpty(news.Body) && !String.IsNullOrEmpty(news.Summary))
+                    if (!string.IsNullOrEmpty(news.Body) && !string.IsNullOrEmpty(news.Summary))
                     {
                         newsCollection.Add(news);
                     }

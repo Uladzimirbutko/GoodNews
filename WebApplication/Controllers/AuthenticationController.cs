@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -15,6 +13,7 @@ namespace WebApplication.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class AuthenticationController : Controller
     {
         private readonly IJwtAuthentication _jwtAuthentication;
@@ -29,7 +28,6 @@ namespace WebApplication.Controllers
             _jwtAuthentication = jwtAuthentication;
         }
 
-        [AllowAnonymous]
         [HttpPost]
         [Route("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
@@ -69,7 +67,6 @@ namespace WebApplication.Controllers
             }
         }
 
-        [AllowAnonymous]
         [HttpPost]
         [Route("Login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
@@ -93,7 +90,6 @@ namespace WebApplication.Controllers
         }
 
         
-        [AllowAnonymous]
         [HttpPost]
         [Route("Refresh")]
         public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest request)

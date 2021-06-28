@@ -9,20 +9,21 @@
 
 @if (Model.IsAdmin)
 {
+
     <p>
-        <a asp-controller="News" asp-action="AggregateNews">Добавить новые новости</a>
+        <a class="btn btn-primary " asp-controller="News" asp-action="AggregateNews">Добавить новые новости</a>
     </p>
 
 }
-<div class="row">
+
+<div class="row align-content-center">
     @foreach (var item in Model.News)
     {
         await Html.RenderPartialAsync("ShortNewsPreview", item);
     }
-    <ul class="pagination">
-        @Html.CreatePagination(Model.PageInfo, i => Url.Action("Index",
-            new { page = i, soureId = Model.News.FirstOrDefault()?.RssSourceId }))
-    </ul>
 </div>
-    <!--<pagination page-model="Model.PageInfo" page-action="Index"></pagination>-->   @*уродский хелпер
-        для постраничного вывода*@
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        @Html.CreatePagination(Model.PageInfo, i => Url.Action("Index", new { page = i }))
+    </ul>
+</nav>

@@ -22,7 +22,7 @@ namespace NewsAggregator.DAL.CQRS.QueryHandlers.CommentQueryHandlers
 
         public async Task<CommentDto> Handle(GetCommentByIdQuery request, CancellationToken cancellationToken)
         {
-            return _mapper.Map<CommentDto>(await _dbContext.Comments.FirstOrDefaultAsync(comment => comment.Id.Equals(request.Id),  cancellationToken));
+            return _mapper.Map<CommentDto>(await _dbContext.Comments.AsNoTracking().FirstOrDefaultAsync(comment => comment.Id.Equals(request.Id),  cancellationToken));
         }
     }
 }

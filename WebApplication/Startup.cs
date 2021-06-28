@@ -1,18 +1,12 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using AutoMapper;
 using Hangfire;
 using Hangfire.SqlServer;
@@ -22,15 +16,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using NewsAggregator.Core.Services.Interfaces;
 using NewsAggregator.DAL.Core;
-using NewsAggregator.DAL.Core.Entities;
 using NewsAggregator.DAL.CQRS.QueryHandlers.RssSourceQueryHandlers;
-using NewsAggregator.DAL.Repositories.Implementation;
-using NewsAggregator.DAL.Repositories.Implementation.Repositories;
-using NewsAggregator.DAL.Repositories.Interfaces;
 using NewsAggregator.Services.Implementation.CqsServices;
 using NewsAggregator.Services.Implementation.Mapping;
 using NewsAggregator.Services.Implementation.NewsRating;
-using NewsAggregator.Services.Implementation.Services;
 using WebApplication.Authentication.JWT;
 
 namespace WebApplication
@@ -161,8 +150,8 @@ namespace WebApplication
             app.UseHangfireDashboard();
 
             var newsService = serviceProvider.GetService(typeof(INewsService)) as INewsService;
-            //RecurringJob.AddOrUpdate(() => newsService.RateNews(), " */30 * * * * ");
-            //RecurringJob.AddOrUpdate(() => newsService.AggregateNews(), " 0 * * * * ");
+            RecurringJob.AddOrUpdate(() => newsService.RateNews(), " */30 * * * * ");
+            RecurringJob.AddOrUpdate(() => newsService.AggregateNews(), " 0 * * * * ");
 
             app.UseHttpsRedirection();
 

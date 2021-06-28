@@ -14,6 +14,6 @@ namespace NewsAggregator.Core.Services.Interfaces
 
         Task<int> Edit(CommentDto comment);
 
-        Task<int> Delete(CommentDto comment);
+        Task<int> Delete(Guid commentId);
     }
 }

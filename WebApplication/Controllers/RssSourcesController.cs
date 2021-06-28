@@ -1,8 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using NewsAggregator.Core.Services.Interfaces;
 using Serilog;
 
@@ -11,14 +10,13 @@ namespace WebApplication.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class NewsController : ControllerBase
+    public class RssSourcesController : ControllerBase
     {
-        private readonly INewsService _newsService;
+        private readonly IRssSourceService _rssSourceService;
 
-
-        public NewsController(INewsService newsService)
+        public RssSourcesController(IRssSourceService rssSourceService)
         {
-            _newsService = newsService;
+            _rssSourceService = rssSourceService;
         }
 
         [HttpGet("{id}")]
@@ -26,7 +24,7 @@ namespace WebApplication.Controllers
         {
             try
             {
-                var news = await _newsService.GetNewsById(id);
+                var news = await _rssSourceService.GetRssSourceById(id);
 
                 if (news == null)
                 {
@@ -46,28 +44,14 @@ namespace WebApplication.Controllers
         {
             try
             {
-                var getAll = await _newsService.GetAllNews();
+                var getAll = await _rssSourceService.GetAllRssSources();
 
-                return Ok(getAll.Take(5).Where(dto => dto.Rating != null));
+                return Ok(getAll);
             }
             catch (Exception e)
             {
                 Log.Error(e.Message);
                 return NotFound(e.Message);
-            }
-        }
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
-        {
-            try
-            {
-                await _newsService.DeleteNews(id);
-
-                return Ok("News deleted");
-            }
-            catch
-            {
-                return StatusCode(400);
             }
         }
     }

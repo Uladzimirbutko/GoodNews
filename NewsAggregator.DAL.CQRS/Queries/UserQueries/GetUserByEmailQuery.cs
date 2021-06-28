@@ -1,5 +1,4 @@
-﻿using System;
-using MediatR;
+﻿using MediatR;
 using NewsAggregator.Core.DataTransferObjects;
 
 namespace NewsAggregator.DAL.CQRS.Queries.UserQueries

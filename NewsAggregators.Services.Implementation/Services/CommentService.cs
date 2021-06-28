@@ -69,11 +69,11 @@ namespace NewsAggregator.Services.Implementation.Services
 
         }
 
-        public async Task<int> Delete(CommentDto comment)
+        public async Task<int> Delete(Guid id)
         {
             try
             {
-                await _unitOfWork.Comments.Remove(await _unitOfWork.Comments.GetById(comment.Id));
+                await _unitOfWork.Comments.Remove(await _unitOfWork.Comments.GetById(id));
                 Log.Information("Delete comment completed");
                 return await _unitOfWork.SaveChangesAsync();
             }

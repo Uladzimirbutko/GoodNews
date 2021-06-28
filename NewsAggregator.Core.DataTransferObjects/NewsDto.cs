@@ -12,7 +12,7 @@ namespace NewsAggregator.Core.DataTransferObjects
         public string Summary { get; set; }
         public string? TitleImage { get; set; }
         public string? Category { get; set; }
-        public float Rating { get; set; }
+        public float? Rating { get; set; }
         public DateTime? PublicationDate { get; set; }
 
         public Guid RssSourceId { get; set; } 

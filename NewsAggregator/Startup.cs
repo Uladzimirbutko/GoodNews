@@ -8,7 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using NewsAggregator.DAL.Core;
-using EasyData.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using NewsAggregator.AuthorizationPolicies;
@@ -18,10 +17,10 @@ using NewsAggregator.DAL.Repositories.Implementation;
 using NewsAggregator.DAL.Repositories.Implementation.Repositories;
 using NewsAggregator.DAL.Repositories.Interfaces;
 using NewsAggregator.Filters;
+using NewsAggregator.Services.Implementation.Mapping;
 using NewsAggregator.Services.Implementation.NewsParsers;
 using NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers;
 using NewsAggregator.Services.Implementation.Services;
-using AutoMapping = NewsAggregator.Mapping.AutoMapping;
 
 namespace NewsAggregator
 {
@@ -130,12 +129,6 @@ namespace NewsAggregator
 
             app.UseEndpoints(endpoints =>
             {
-
-                endpoints.MapEasyData(options =>
-                {
-                    options.UseDbContext<NewsAggregatorContext>();
-                });
-
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

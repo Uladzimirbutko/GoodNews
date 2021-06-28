@@ -41,6 +41,7 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
                         Url = item.Id,
                         TitleImage = "/img/S13.jpg",
                         Category = item.Categories[0].Name.ToUpper(),
+                        Rating = null
 
                     };
                     if (!String.IsNullOrEmpty(news.Body) && !String.IsNullOrEmpty(news.Summary))

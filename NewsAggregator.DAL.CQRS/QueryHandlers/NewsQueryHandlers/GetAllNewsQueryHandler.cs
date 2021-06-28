@@ -27,7 +27,8 @@ namespace NewsAggregator.DAL.CQRS.QueryHandlers.NewsQueryHandlers
         public async Task<IEnumerable<NewsDto>> Handle(GetAllNewsQuery request, CancellationToken cancellationToken)
         {
             var news = await _dbContext.News
-                .OrderByDescending(dto => dto.PublicationDate)
+                .OrderByDescending(dto => dto.Rating)
+                .Take(10)
                 .Select(dto => _mapper.Map<NewsDto>(dto))
                 .ToListAsync(cancellationToken: cancellationToken);
             return news;

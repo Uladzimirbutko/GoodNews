@@ -7,7 +7,6 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using NewsAggregator.Core.DataTransferObjects;
 using NewsAggregator.DAL.Core;
-using NewsAggregator.DAL.CQRS.Queries.NewsQueries;
 using NewsAggregator.DAL.CQRS.Queries.UserQueries;
 
 namespace NewsAggregator.DAL.CQRS.QueryHandlers.UserQueryHandlers

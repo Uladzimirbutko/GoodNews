@@ -26,7 +26,7 @@ namespace NewsAggregator.Services.Implementation.NewsParsers
 
                 switch (sourceDto.SourceName)
                 {
-                    case "Onliner": //выполнено
+                    case "Onliner":
                         {
                             var parser = new OnlinerParser();
 

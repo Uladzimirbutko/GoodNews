@@ -1,47 +1,66 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using NewsAggregator.Core.DataTransferObjects;
+using NewsAggregator.Core.Services.Interfaces;
+using Serilog;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+
 
 namespace WebApplication.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
-        // GET: api/<UserController>
+        private readonly IUserService _userService;
+
+        public UserController(IUserService userService)
+        {
+            _userService = userService;
+        }
+
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IActionResult> Get([FromBody]UserDto user)   
         {
-            return new string[] { "value1", "value2" };
-        }
+            try
+            {
+                if (string.IsNullOrEmpty(user.Email))
+                {
+                    var getAll = await _userService.GetAllUsers();
+                    return Ok(getAll);
+                }
 
-        // GET api/<UserController>/5
+                var userByEmail = await _userService.GetUserByEmail(user.Email);
+                return Ok(userByEmail);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return NotFound(e.Message);
+            }
+        }
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> Get(Guid id)
         {
-            return "value";
-        }
+            try
+            {
+                var user = await _userService.GetUserById(id);
 
-        // POST api/<UserController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
+                if (user == null)
+                {
+                    return NotFound();
+                }
 
-        // PUT api/<UserController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<UserController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+                return Ok(user);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                return NotFound();
+            }
         }
     }
 }

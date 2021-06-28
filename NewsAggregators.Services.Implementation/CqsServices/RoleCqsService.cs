@@ -6,7 +6,6 @@ using NewsAggregator.Core.DataTransferObjects;
 using NewsAggregator.Core.Services.Interfaces;
 using NewsAggregator.DAL.CQRS.Commands.RoleCommand;
 using NewsAggregator.DAL.CQRS.Queries.RoleQueries;
-using NewsAggregator.DAL.CQRS.Queries.UserQueries;
 using Serilog;
 
 namespace NewsAggregator.Services.Implementation.CqsServices

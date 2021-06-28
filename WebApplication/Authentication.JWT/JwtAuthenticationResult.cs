@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace WebApplication.Authentication.JWT
+﻿namespace WebApplication.Authentication.JWT
 {
     public class JwtAuthenticationResult
     {

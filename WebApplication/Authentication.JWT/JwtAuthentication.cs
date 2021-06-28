@@ -5,9 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using NewsAggregator.Core.DataTransferObjects;
 using NewsAggregator.Core.Services.Interfaces;
-using Serilog;
 
 namespace WebApplication.Authentication.JWT
 {
@@ -29,7 +27,7 @@ namespace WebApplication.Authentication.JWT
             var jwtToken = new JwtSecurityToken("NewsAggregator",
                 "NewsAggregator",
                 claims,
-                expires: DateTime.Now.AddMinutes(20),
+                expires: DateTime.Now.AddMinutes(120),
                 signingCredentials: new SigningCredentials(
                     new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])),
                     SecurityAlgorithms.HmacSha256Signature));

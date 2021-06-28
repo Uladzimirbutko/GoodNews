@@ -1,8 +1,14 @@
 ﻿@model NewsAggregator.Core.DataTransferObjects.NewsDto
 
+@if (Model.Rating < 0)
+{
 
-<div class="card" style="width: 18rem;">
+}
+
+<div class="card" style="width: 20rem;">
     <small>Дата публикации: @Model.PublicationDate</small>
+    <small>Рейтинг: @Math.Round((float)Model.Rating, 1)</small>
+
     <img src="@Model.TitleImage" class="card-img-top" alt="img-card">
     <div class="card-body">
         <h5 class="card-title">@Model.Article </h5>
@@ -10,9 +16,8 @@
             @Model.Summary
         </p>
 
-
     </div>
-    <div>
+    <div class="d-grid gap-2 col-6 mx-auto">
         <a class="btn btn-primary" asp-action="Details" asp-route-id="@Model.Id">Подробнее</a>
     </div>
 </div>

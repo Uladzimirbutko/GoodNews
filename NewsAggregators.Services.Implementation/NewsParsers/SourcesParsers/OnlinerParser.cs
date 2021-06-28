@@ -37,7 +37,8 @@ namespace NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers
                         RssSourceId = _sourceId,
                         Url = item.Id,
                         TitleImage = ImageParser(item.Id),
-                        Category = item.Categories[0].Name.ToUpper()
+                        Category = item.Categories[0].Name.ToUpper(),
+                        Rating = null
                     };
                     if (!string.IsNullOrEmpty(news.Body) && !string.IsNullOrEmpty(news.Summary))
                     {

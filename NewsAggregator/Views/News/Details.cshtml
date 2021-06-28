@@ -16,16 +16,23 @@
 @Model.PublicationDate
 
 <div class="btn-group-vertical col-sm-12">
-    <button class="btn btn-light col-sm-12">
-        <a class="text-info" href="@Model.Url">Читать в источнике</a>
-    </button>
-    <button class="btn btn-light col-sm-12">
-        <a class="text-info" asp-action="Index">Назад</a>
-    </button>
+    @if (Model.IsAdmin)
+    {
+
+        <form method="post" asp-action="Delete" asp-controller="News" asp-route-id="@Model.Id">
+            <button type="submit" class="btn btn-danger mb-3">Удалить новость</button>
+        </form>
+
+    }
+    <a class="btn btn-light col-sm-12" href="@Model.Url">Читать в источнике</a>
+
+
+    <a class="btn btn-light col-sm-12" asp-action="Index">Назад</a>
+
     <button id="comments-display-switcher" class="btn btn-light col-sm-12" onclick="toggleComments('@Model.Id')">Показать комментарии</button>
     <div class="container">
         <div id="comments-container" class="row">
-            
+
         </div>
     </div>
 
