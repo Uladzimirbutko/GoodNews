@@ -4,7 +4,7 @@ using NewsAggregator.Core.DataTransferObjects;
 
 namespace NewsAggregator.DAL.CQRS.Queries.NewsQueries
 {
-    public class GetAllNewsWithoutRatingQuery : IRequest<IEnumerable<NewsDto>>
+    public class GetNewsWithoutRatingQuery : IRequest<IEnumerable<NewsDto>>
     {
         
     }

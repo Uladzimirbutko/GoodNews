@@ -47,9 +47,7 @@ namespace NewsAggregator.Services.Implementation.NewsRating
                         newsDto.Rating = (float) rating;  
                     }
                     
-
                     newsWithRating.Add(newsDto);
-
                 }
 
                 return newsWithRating;
@@ -90,8 +88,6 @@ namespace NewsAggregator.Services.Implementation.NewsRating
                 Log.Error($"Error rating news return null {e}");
                 return null;
             }
-
-
         }
 
         private async Task<Dictionary<string, int>> GetAfinnWords()
@@ -110,8 +106,8 @@ namespace NewsAggregator.Services.Implementation.NewsRating
         {
             try
             {
-                var httplient = new HttpClient();
-                httplient.DefaultRequestHeaders
+                var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders
                     .Accept
                     .Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -124,7 +120,7 @@ namespace NewsAggregator.Services.Implementation.NewsRating
                         Encoding.UTF8,
                         "application/json")
                 };
-                var response = await httplient.SendAsync(request);
+                var response = await httpClient.SendAsync(request);
                 var resultResponse = await response.Content.ReadAsStringAsync();
 
                 var listResponse = JsonConvert.DeserializeObject<ModelResponse[]>(resultResponse);

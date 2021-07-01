@@ -11,20 +11,20 @@ using NewsAggregator.DAL.CQRS.Queries.NewsQueries;
 
 namespace NewsAggregator.DAL.CQRS.QueryHandlers.NewsQueryHandlers
 {
-    public class GetAllNewsWithoutRatingQueryHandler :
-        IRequestHandler<GetAllNewsWithoutRatingQuery, IEnumerable<NewsDto>>
+    public class GetNewsWithoutRatingQueryHandler :
+        IRequestHandler<GetNewsWithoutRatingQuery, IEnumerable<NewsDto>>
     {
         private readonly NewsAggregatorContext _dbContext;
         private readonly IMapper _mapper;
 
 
-        public GetAllNewsWithoutRatingQueryHandler(NewsAggregatorContext dbContext, IMapper mapper)
+        public GetNewsWithoutRatingQueryHandler(NewsAggregatorContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<NewsDto>> Handle(GetAllNewsWithoutRatingQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<NewsDto>> Handle(GetNewsWithoutRatingQuery request, CancellationToken cancellationToken)
         {
             var news = await _dbContext.News
                 .Where(rt => rt.Rating == null)

@@ -11,8 +11,11 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="AggregateNews">
-            <input type="submit" value="ДА!" class="btn btn-danger" /> |
-            <a asp-action="Index">НЕТ</a>
+            <input type="submit" value="ДА!" class="btn btn-danger" /> | <a asp-action="Index">НЕТ</a>
+        </form>
+        <p>Хотите добавить рейтинг новостям? Это может занять некоторое время!</p>
+        <form asp-action="AddRatingToNews">
+            <input type="submit" value="ДА!" class="btn btn-danger" /> | <a asp-action="Index">НЕТ</a>
         </form>
     </div>
 </div>

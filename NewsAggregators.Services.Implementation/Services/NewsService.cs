@@ -9,6 +9,7 @@ using NewsAggregator.Core.Services.Interfaces;
 using NewsAggregator.DAL.Core.Entities;
 using NewsAggregator.DAL.Repositories.Implementation;
 using NewsAggregator.Services.Implementation.NewsParsers;
+using NewsAggregator.Services.Implementation.NewsRating;
 using Serilog;
 
 namespace NewsAggregator.Services.Implementation.Services
@@ -18,12 +19,14 @@ namespace NewsAggregator.Services.Implementation.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IRssSourceService _rssSourceService;
+        private readonly INewsRatingService _newsRatingService;
 
-        public NewsService(IUnitOfWork unitOfWork, IMapper mapper, IRssSourceService rssSourceService)
+        public NewsService(IUnitOfWork unitOfWork, IMapper mapper, IRssSourceService rssSourceService, INewsRatingService newsRatingService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _rssSourceService = rssSourceService;
+            _newsRatingService = newsRatingService;
         }
 
         public async Task<IEnumerable<NewsDto>> AggregateNews()
@@ -60,12 +63,30 @@ namespace NewsAggregator.Services.Implementation.Services
 
         public async Task RateNews()
         {
-            throw new NotImplementedException();
+            var getNewsWithoutRating = await GetNewsWithoutRating();
+            if (getNewsWithoutRating != null)
+            {
+                var newsWithRating = await _newsRatingService.Rating(getNewsWithoutRating);
+
+                await UpdateNews(newsWithRating);
+            }
+        }
+
+        public async Task<IEnumerable<NewsDto>> GetNewsWithoutRating()
+        {
+            var getNewsWithoutRating = await _unitOfWork.News
+                .GetAll()
+                .Where(news => news.Rating != null)
+                .Take(29)
+                .Select(news => _mapper.Map<NewsDto>(news))
+                .ToListAsync();
+            return getNewsWithoutRating;
         }
 
         public async Task<IEnumerable<NewsDto>> GetAllNews()
         {
-            return await _unitOfWork.News.GetAll()
+            return await _unitOfWork.News
+                .GetAll()
                 .Select(n => _mapper.Map<NewsDto>(n))
                 .ToListAsync();
         }
@@ -111,9 +132,16 @@ namespace NewsAggregator.Services.Implementation.Services
             }
         }
 
-        public async Task<int> UpdateNews(IEnumerable<NewsDto> news)
+        public async Task<int> UpdateNews(IEnumerable<NewsDto> newsDto)
         {
-            throw new NotImplementedException();
+            foreach (var dto in newsDto)
+            {
+                var news = await _unitOfWork.News.GetById(dto.Id);
+                news.Rating = dto.Rating;
+            }
+
+            var save = await _unitOfWork.SaveChangesAsync();
+            return save;
         }
 
         public async Task DeleteNews(Guid id)

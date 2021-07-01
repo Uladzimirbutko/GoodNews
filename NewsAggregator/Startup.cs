@@ -20,6 +20,7 @@ using NewsAggregator.Filters;
 using NewsAggregator.Services.Implementation.Mapping;
 using NewsAggregator.Services.Implementation.NewsParsers;
 using NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers;
+using NewsAggregator.Services.Implementation.NewsRating;
 using NewsAggregator.Services.Implementation.Services;
 
 namespace NewsAggregator
@@ -55,6 +56,7 @@ namespace NewsAggregator
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<INewsRatingService, NewsRatingService>();
 
             #endregion
 

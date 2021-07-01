@@ -39,7 +39,7 @@ namespace NewsAggregator.Services.Implementation.CqsServices
             }
             catch (Exception e)
             {
-                Log.Error($"Exception {e.Message}");
+                Log.Error($"Exception GetNewsBySourceId {e.Message}");
                 return null;
             }
         }
@@ -53,11 +53,24 @@ namespace NewsAggregator.Services.Implementation.CqsServices
             }
             catch (Exception e)
             {
-                Log.Error($"Exception {e.Message}");
+                Log.Error($"Exception GetNewsById {e.Message}");
                 return null;
             }
         }
 
+
+        public async Task<IEnumerable<NewsDto>> GetNewsWithoutRating()
+        {
+            try
+            {
+                return await _mediator.Send(new GetNewsWithoutRatingQuery());
+            }
+            catch (Exception e)
+            {
+                Log.Error($"Exception in GetNewsWithoutRating {e.Message}");
+                return null;
+            }
+        }
 
         public async Task<int> AddRange(IEnumerable<NewsDto> news)
         {
@@ -75,11 +88,11 @@ namespace NewsAggregator.Services.Implementation.CqsServices
             }
         }
 
-        public async Task<int> UpdateNews(IEnumerable<NewsDto> news)
+        public async Task<int> UpdateNews(IEnumerable<NewsDto> newsDto)
         {
             try
             {
-                var count = await _mediator.Send(new UpdateNewsCommand(news));
+                var count = await _mediator.Send(new UpdateNewsCommand(newsDto));
                 Log.Information($"Updaded {count} News");
                 return count;
             }
@@ -159,16 +172,15 @@ namespace NewsAggregator.Services.Implementation.CqsServices
 
         public async Task RateNews()
         {
-            var getAllNewsWithoutRatingQuery = await _mediator.Send(new GetAllNewsWithoutRatingQuery());
+            var getNewsWithoutRatingQuery = await GetNewsWithoutRating();
 
 
-            if (getAllNewsWithoutRatingQuery != null)
+            if (getNewsWithoutRatingQuery != null)
             {
-                var newsWithRating = await _newsRatingService.Rating(getAllNewsWithoutRatingQuery);
+                var newsWithRating = await _newsRatingService.Rating(getNewsWithoutRatingQuery);
 
                 await UpdateNews(newsWithRating);
             }
-
 
         }
 

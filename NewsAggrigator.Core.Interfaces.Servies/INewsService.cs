@@ -14,10 +14,9 @@ namespace NewsAggregator.Core.Services.Interfaces
 
         Task<IEnumerable<NewsDto>> AggregateNews();
         Task RateNews();
-        
-
+        Task<IEnumerable<NewsDto>> GetNewsWithoutRating();
         Task<int> AddRange(IEnumerable<NewsDto> news);
-        Task<int> UpdateNews (IEnumerable<NewsDto> news);
+        Task<int> UpdateNews (IEnumerable<NewsDto> newsDto);
         Task DeleteNews(Guid id);
         
     }

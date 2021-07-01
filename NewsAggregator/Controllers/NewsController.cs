@@ -107,6 +107,16 @@ namespace NewsAggregator.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddRatingToNews(NewsDto news)
+        {
+
+            await _newsService.RateNews();
+
+            return RedirectToAction(nameof(Index));
+        }
+
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(Guid id)
         {
