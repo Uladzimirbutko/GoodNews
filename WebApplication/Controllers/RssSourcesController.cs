@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using NewsAggregator.Core.Services.Interfaces;
+using NewsAggregator.Core.Interfaces.Services;
 using Serilog;
 
 namespace WebApplication.Controllers

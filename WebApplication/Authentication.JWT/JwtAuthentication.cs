@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using NewsAggregator.Core.Services.Interfaces;
+using NewsAggregator.Core.Interfaces.Services;
 
 namespace WebApplication.Authentication.JWT
 {

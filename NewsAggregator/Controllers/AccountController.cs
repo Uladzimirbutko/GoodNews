@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using NewsAggregator.Core.DataTransferObjects;
-using NewsAggregator.Core.Services.Interfaces;
+using NewsAggregator.Core.Interfaces.Services;
 using NewsAggregator.Models.ViewModels.AccountViewModel;
 using Serilog;
 

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
 using NewsAggregator.Core.DataTransferObjects;
-using NewsAggregator.Core.Services.Interfaces;
+using NewsAggregator.Core.Interfaces.Services;
 using NewsAggregator.DAL.CQRS.Commands.NewsCommands;
 using NewsAggregator.DAL.CQRS.Queries.NewsQueries;
 using NewsAggregator.Services.Implementation.NewsParsers;

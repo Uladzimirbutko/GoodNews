@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using NewsAggregator.Core.DataTransferObjects;
-using NewsAggregator.Core.Services.Interfaces;
+using NewsAggregator.Core.Interfaces.Services;
 using NewsAggregator.DAL.CQRS.Commands.UserCommands;
 using NewsAggregator.DAL.CQRS.Queries.UserQueries;
 using Serilog;

@@ -14,7 +14,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using NewsAggregator.Core.Services.Interfaces;
+using NewsAggregator.Core.Interfaces.Services;
 using NewsAggregator.DAL.Core;
 using NewsAggregator.DAL.CQRS.QueryHandlers.RssSourceQueryHandlers;
 using NewsAggregator.Services.Implementation.CqsServices;

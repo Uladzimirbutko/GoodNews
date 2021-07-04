@@ -18,8 +18,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{19
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NewsAggregator.Core", "NewsAggregator.Core", "{C12317E0-230A-49E1-ABE4-3F2A60FED220}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewsAggregator.Core.Services.Interfaces", "NewsAggrigator.Core.Interfaces.Servies\NewsAggregator.Core.Services.Interfaces.csproj", "{D28CE542-AAE5-4131-A236-8EE46FCA213E}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewsAggregator.Core.DataTransferObjects", "NewsAggregator.Core.DataTransferObjects\NewsAggregator.Core.DataTransferObjects.csproj", "{71B8D917-FC83-4897-92FB-050184B253BA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewsAggregator.Services.Implementation", "NewsAggregators.Services.Implementation\NewsAggregator.Services.Implementation.csproj", "{2F9EC961-DBD2-418C-907D-A973421557ED}"
@@ -32,9 +30,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewsAggregator.DAL.Reposito
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewsAggregator.DAL.Repositories.Interfaces", "NewsAggregator.DAL.Interfaces\NewsAggregator.DAL.Repositories.Interfaces.csproj", "{1E8EACF0-D37B-456E-9DBC-1D19FB488F73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewsAggregator.DAL.CQRS", "NewsAggregator.DAL.CQRS\NewsAggregator.DAL.CQRS.csproj", "{C029B5B7-F734-4640-BE1B-20EDA8358B07}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewsAggregator.DAL.CQRS", "NewsAggregator.DAL.CQRS\NewsAggregator.DAL.CQRS.csproj", "{C029B5B7-F734-4640-BE1B-20EDA8358B07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication", "WebApplication\WebApplication.csproj", "{AD71C9A9-765C-4743-B938-CFF8A59E248A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplication", "WebApplication\WebApplication.csproj", "{AD71C9A9-765C-4743-B938-CFF8A59E248A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewsAggregator.Core.Interfaces.Services", "NewsAggregator.Core.Interfaces.Services\NewsAggregator.Core.Interfaces.Services.csproj", "{BB224A2C-3746-46F3-8542-261253672D59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,10 +50,6 @@ Global
 		{5DB71518-9DDF-4445-A7EA-CEB76604ABAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DB71518-9DDF-4445-A7EA-CEB76604ABAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DB71518-9DDF-4445-A7EA-CEB76604ABAA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D28CE542-AAE5-4131-A236-8EE46FCA213E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D28CE542-AAE5-4131-A236-8EE46FCA213E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D28CE542-AAE5-4131-A236-8EE46FCA213E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D28CE542-AAE5-4131-A236-8EE46FCA213E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{71B8D917-FC83-4897-92FB-050184B253BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{71B8D917-FC83-4897-92FB-050184B253BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71B8D917-FC83-4897-92FB-050184B253BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -78,18 +74,22 @@ Global
 		{AD71C9A9-765C-4743-B938-CFF8A59E248A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD71C9A9-765C-4743-B938-CFF8A59E248A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD71C9A9-765C-4743-B938-CFF8A59E248A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB224A2C-3746-46F3-8542-261253672D59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB224A2C-3746-46F3-8542-261253672D59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB224A2C-3746-46F3-8542-261253672D59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB224A2C-3746-46F3-8542-261253672D59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{5DB71518-9DDF-4445-A7EA-CEB76604ABAA} = {38D0691A-D310-4A0C-8B4A-517CA69AC74A}
-		{D28CE542-AAE5-4131-A236-8EE46FCA213E} = {198EEE27-052D-4920-9E47-6337715B358F}
 		{71B8D917-FC83-4897-92FB-050184B253BA} = {C12317E0-230A-49E1-ABE4-3F2A60FED220}
 		{2F9EC961-DBD2-418C-907D-A973421557ED} = {198EEE27-052D-4920-9E47-6337715B358F}
 		{6167FD42-33BF-40EC-AEFE-4FD570594F96} = {38D0691A-D310-4A0C-8B4A-517CA69AC74A}
 		{1E8EACF0-D37B-456E-9DBC-1D19FB488F73} = {38D0691A-D310-4A0C-8B4A-517CA69AC74A}
 		{C029B5B7-F734-4640-BE1B-20EDA8358B07} = {38D0691A-D310-4A0C-8B4A-517CA69AC74A}
+		{BB224A2C-3746-46F3-8542-261253672D59} = {198EEE27-052D-4920-9E47-6337715B358F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5C7C1F3B-319C-40CD-946A-AED700F4AD9B}

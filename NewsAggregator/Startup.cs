@@ -11,17 +11,17 @@ using NewsAggregator.DAL.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using NewsAggregator.AuthorizationPolicies;
-using NewsAggregator.Core.Services.Interfaces;
+using NewsAggregator.Core.Interfaces.Services;
 using NewsAggregator.DAL.Core.Entities;
 using NewsAggregator.DAL.Repositories.Implementation;
 using NewsAggregator.DAL.Repositories.Implementation.Repositories;
 using NewsAggregator.DAL.Repositories.Interfaces;
 using NewsAggregator.Filters;
 using NewsAggregator.Services.Implementation.Mapping;
-using NewsAggregator.Services.Implementation.NewsParsers;
 using NewsAggregator.Services.Implementation.NewsParsers.SourcesParsers;
 using NewsAggregator.Services.Implementation.NewsRating;
 using NewsAggregator.Services.Implementation.Services;
+using IWebPageParser = NewsAggregator.Services.Implementation.NewsParsers.IWebPageParser;
 
 namespace NewsAggregator
 {

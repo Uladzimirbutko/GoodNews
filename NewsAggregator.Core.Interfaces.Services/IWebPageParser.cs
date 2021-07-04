@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace NewsAggregator.Core.Services.Interfaces
+namespace NewsAggregator.Core.Interfaces.Services
 {
     public interface IWebPageParser // parse - get raw data -> requested data
     {

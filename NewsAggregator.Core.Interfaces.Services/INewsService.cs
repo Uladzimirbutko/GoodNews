@@ -3,22 +3,20 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NewsAggregator.Core.DataTransferObjects;
 
-namespace NewsAggregator.Core.Services.Interfaces
+namespace NewsAggregator.Core.Interfaces.Services
 {
     public interface INewsService
     {
-        Task<IEnumerable<NewsDto>> GetNews(Guid id);
-        Task<IEnumerable<NewsDto>> GetNewsBySourceId(Guid? id);
+        Task<IEnumerable<NewsDto>> GetAllNews();
         Task<NewsDto> GetNewsById(Guid id);
-        Task<NewsWithRssNameDto> GetNewsWithRssSourceNameById(Guid id);
+        Task<IEnumerable<NewsDto>> GetNewsBySourceId(Guid sourceId);
 
-        Task AddNews(NewsDto news);
-        Task AddRange(IEnumerable<NewsDto> news);
-
-
-        Task<IEnumerable<NewsDto>> GetNewsInfoFromRssSource(RssSourceDto rssSource);
+        Task<IEnumerable<NewsDto>> AggregateNews();
+        Task RateNews();
 
 
-        Task DeleteNews(NewsDto news);
+        Task<int> AddRange(IEnumerable<NewsDto> news);
+        Task<int> UpdateNews(IEnumerable<NewsDto> news);
+        Task DeleteNews(Guid id);
     }
 }

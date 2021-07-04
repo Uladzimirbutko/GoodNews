@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using NewsAggregator.Core.DataTransferObjects;
-using NewsAggregator.Core.Services.Interfaces;
+using NewsAggregator.Core.Interfaces.Services;
 using NewsAggregator.DAL.Core.Entities;
 using NewsAggregator.DAL.Repositories.Implementation;
 using NewsAggregator.Services.Implementation.NewsParsers;
@@ -134,14 +134,22 @@ namespace NewsAggregator.Services.Implementation.Services
 
         public async Task<int> UpdateNews(IEnumerable<NewsDto> newsDto)
         {
-            foreach (var dto in newsDto)
+            try
             {
-                var news = await _unitOfWork.News.GetById(dto.Id);
-                news.Rating = dto.Rating;
-            }
+                foreach (var dto in newsDto)
+                {
+                    var news = await _unitOfWork.News.GetById(dto.Id);
+                    news.Rating = dto.Rating;
+                }
 
-            var save = await _unitOfWork.SaveChangesAsync();
-            return save;
+                var save = await _unitOfWork.SaveChangesAsync();
+                return save;
+            }
+            catch (Exception e)
+            {
+                Log.Error($"Error in UpdateNews {e.Message}");
+                return 0;
+            }
         }
 
         public async Task DeleteNews(Guid id)

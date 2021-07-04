@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NewsAggregator.Core.DataTransferObjects;
 
-namespace NewsAggregator.Core.Services.Interfaces
+namespace NewsAggregator.Core.Interfaces.Services
 {
     public interface ICommentService
     {
-        Task<IEnumerable<CommentDto>> GetCommentsByNewsId(Guid id);
+        Task<CommentDto> GetCommentById(Guid commentId);
+        Task<IEnumerable<CommentDto>> GetCommentsByNewsId(Guid newsId);
 
-        Task AddComment(CommentDto news);
+        Task<int> Add(CommentDto comment);
+
+        Task<int> Edit(CommentDto comment);
+
+        Task<int> Delete(Guid commentId);
     }
 }

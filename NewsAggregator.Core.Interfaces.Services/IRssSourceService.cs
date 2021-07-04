@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NewsAggregator.Core.DataTransferObjects;
 
-namespace NewsAggregator.Core.Services.Interfaces
+namespace NewsAggregator.Core.Interfaces.Services
 {
     public interface IRssSourceService
     {
-        Task <IEnumerable<RssSourceDto>> GetAllRssSources();
-        Task <RssSourceDto> GetRssSourceById(Guid id);
-        Task<IEnumerable<RssSourceDto>> GetRssSourcesByIds (IEnumerable<Guid> ids);
+        Task<IEnumerable<RssSourceDto>> GetAllRssSources();
+        Task<RssSourceDto> GetRssSourceById(Guid id);
 
-        Task AddRssSource(RssSourceDto rssSource);
-        Task<RssSourceDto> EditRssSource(RssSourceDto rssSource);
-        Task DeleteRssSource(RssSourceDto rssSource);
+        Task<IEnumerable<RssSourceDto>> GetRssSourcesByNameAndUrl
+            (string name, string url);
     }
 }

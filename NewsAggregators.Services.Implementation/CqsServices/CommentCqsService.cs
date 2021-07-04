@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
 using NewsAggregator.Core.DataTransferObjects;
-using NewsAggregator.Core.Services.Interfaces;
+using NewsAggregator.Core.Interfaces.Services;
 using NewsAggregator.DAL.CQRS.Commands.CommentCommands;
 using NewsAggregator.DAL.CQRS.Queries.CommentQueries;
 using Serilog;
@@ -32,6 +32,7 @@ namespace NewsAggregator.Services.Implementation.CqsServices
             }
         }
 
+
         public async Task<IEnumerable<CommentDto>> GetCommentsByNewsId(Guid newsId)
         {
             try
@@ -57,6 +58,7 @@ namespace NewsAggregator.Services.Implementation.CqsServices
                 return 0;
             }
         }
+
 
         public async Task<int> Edit(CommentDto comment)
         {
